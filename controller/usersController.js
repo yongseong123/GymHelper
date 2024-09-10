@@ -108,7 +108,7 @@ exports.getUserName = async function (id) {
   }
 }
 
-//회원 탈원
+//회원 탈퇴
 exports.deleteUser = async function (req, res, next) {
   try {
     await usersModel.deleteUser(req.user);

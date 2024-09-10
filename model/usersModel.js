@@ -41,19 +41,7 @@ exports.getUserName = async function (id) {
   return recordset[0]?.name;
 };
 
-exports.getUserGraduatedTargetAverageGrade = async function (id) {
-  const pool = await poolPromise;
-  const { recordset } =
-    await pool.query`SELECT graduated_target_avg_score FROM Student WHERE student_id = ${id}`;
-
-  return recordset[0]?.graduated_target_avg_score;
-}
-
-exports.setUserGraduatedTargetAverageGrade = async function (id, newTarget) {
-  const pool = await poolPromise;
-  await pool.query`UPDATE Student SET graduated_target_avg_score = ${newTarget} WHERE student_id = ${id}`;
-}
-
+//수정필요
 exports.deleteUser = async function (id) {
   const pool = await poolPromise;
   await pool.query`DELETE FROM Friend WHERE student_id = ${id} OR friend_student_id = ${id}`;
