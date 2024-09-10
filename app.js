@@ -11,8 +11,7 @@ const passportConfig = require("./passport"); // passport/index.js 폴더 임포
 
 const indexRouter = require('./routes/indexRouter');
 const usersRouter = require('./routes/usersRouter');
-const subjectsRouter = require('./routes/subjectsRouter');
-const friendsRouter = require('./routes/friendsRouter');
+const worksRouter = require('./routes/worksRouter');
 const app = express();
 
 // view engine setup
@@ -49,8 +48,7 @@ app.use(function (req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/subjects', subjectsRouter);
-app.use('/api/friends', friendsRouter);
+app.use('/api/works', worksRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
