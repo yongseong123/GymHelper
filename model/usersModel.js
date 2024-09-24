@@ -4,21 +4,21 @@ const { poolPromise } = require("./index");
 exports.addNewUser = async function (userInfo) {
   const { id, hashedPassword, username } = userInfo;
   const pool = await poolPromise;
-  await pool.query`INSERT INTO Student(student_id, password, name) VALUES
+  await pool.query`INSERT INTO user(id, password, username) VALUES
                       (${id}, ${hashedPassword}, ${username});`;
 };
 
 exports.getUserById = async function (id) {
   const pool = await poolPromise;
   const { recordset } =
-    await pool.query`SELECT * FROM Student WHERE student_id = ${id}`;
+    await pool.query`SELECT * FROM user WHERE id = ${id}`;
   return recordset;
 };
 
 exports.checkIdDuplication = async function (id) {
   const pool = await poolPromise;
   const { recordset } =
-    await pool.query`SELECT student_id FROM Student WHERE student_id = ${id}`;
+    await pool.query`SELECT id FROM user WHERE id = ${id}`;
 
   if (recordset.length > 0) return true;
   return false;
@@ -26,25 +26,22 @@ exports.checkIdDuplication = async function (id) {
 
 exports.changePassword = async function (id, newPassword) {
   const pool = await poolPromise;
-  await pool.query`UPDATE Student SET password = ${newPassword} WHERE student_id = ${id}`;
+  await pool.query`UPDATE user SET password = ${newPassword} WHERE id = ${id}`;
 };
 
 exports.changeName = async function (id, newName) {
   const pool = await poolPromise;
-  await pool.query`UPDATE Student SET name = ${newName} WHERE student_id = ${id}`;
+  await pool.query`UPDATE user SET username = ${newName} WHERE id = ${id}`;
 }
 
 exports.getUserName = async function (id) {
   const pool = await poolPromise;
   const { recordset } =
-    await pool.query`SELECT name FROM Student WHERE student_id = ${id}`;
+    await pool.query`SELECT username FROM user WHERE id = ${id}`;
   return recordset[0]?.name;
 };
 
-//수정필요
 exports.deleteUser = async function (id) {
   const pool = await poolPromise;
-  await pool.query`DELETE FROM Friend WHERE student_id = ${id} OR friend_student_id = ${id}`;
-  await pool.query`DELETE FROM Score WHERE student_id = ${id}`;
-  await pool.query`DELETE FROM Student WHERE student_id = ${id}`;
+  await pool.query`DELETE FROM user WHERE id = ${id}`;
 }
