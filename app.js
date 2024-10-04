@@ -12,6 +12,7 @@ const passportConfig = require("./passport"); // passport/index.js 폴더 임포
 const indexRouter = require('./routes/indexRouter');
 const usersRouter = require('./routes/usersRouter');
 const worksRouter = require('./routes/worksRouter');
+const boardRouter = require('./routes/boardRouter');
 const app = express();
 
 // view engine setup
@@ -49,6 +50,7 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/works', worksRouter);
+app.use('/api/board', boardRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
