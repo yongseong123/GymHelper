@@ -10,8 +10,8 @@ exports.addNewUser = async function (userInfo) {
 
 exports.getUserById = async function (id) {
   const pool = await poolPromise;
-  const { recordset } =
-    await pool.query`SELECT * FROM users WHERE id = ${id}`;
+  const { recordset } = await pool.query`SELECT * FROM users WHERE id = ${id}`;
+  console.log("User Recordset: ", recordset); // 사용자 정보 출력
   return recordset;
 };
 
