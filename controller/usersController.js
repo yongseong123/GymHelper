@@ -113,7 +113,10 @@ exports.getUserName = async function (id) {
 //회원 탈퇴
 exports.deleteUser = async function (req, res, next) {
   try {
-    await usersModel.deleteUser(req.user);
+    console.log("Request User: ", req.user); // req.user 값 출력하여 확인
+    if (!req.user) return next(createError(400, "User not authenticated or not found"));
+
+    await usersModel.deleteUser(req.user.id); // req.user.id로 사용자를 삭제
     req.logOut(function (err) {
       if (err) {
         return next(createError(500, "logout_error"));
@@ -123,4 +126,4 @@ exports.deleteUser = async function (req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
