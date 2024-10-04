@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheets/accountSettings.css">
+    <script src="javascripts/accountSettings.js"></script>
+    <title>계정 관리</title>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title">계정 관리</span>
+        </div>
+        <div class="signup-container">
+            <form class="signup-form">
+                <label for="username">이름</label>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+            
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            
+                <label for="confirmPassword">비밀번호 확인</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            </form>
+            <button onclick="accountSet()">계정 수정하기</button>
+            <div class="login-link">
+                <a href="/myGrades">뒤로가기</a>
+            </div>
+            <div class="delete-account-link">
+                <a onclick="deleteAccount()">계정 탈퇴하기</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

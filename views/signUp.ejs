@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheets/signUp.css">
+    <script src="javascripts/signUp.js"></script>
+    <title>회원가입</title>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title">Sign Up</span>
+        </div>
+        <div class="signup-container">
+            <form form class="signup-form">
+                <label for="id">학번</label>
+                <input type="text" id="id" name="id" placeholder="id" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+
+                <label for="username">성함</label>
+                <input type="text" id="username" name="username" placeholder="username" required>
+            
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            
+                <label for="confirmPassword">비밀번호 확인</label>
+                <input type="password" id="checkedPassword" name="checkedPassword" placeholder="Confirm Password" required>
+            
+                <button type="button" onclick="signUp()">Sign Up</button>
+            </form>
+            <div class="login-link">
+                <a href="/logIn">이미 계정이 있으십니까? Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
