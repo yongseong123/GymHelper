@@ -11,9 +11,7 @@ module.exports = () => {
 
   passport.deserializeUser(async function (id, cb) {
     try {
-      console.log("Deserializing ID: ", id); // Deserializing 시 ID 값 출력
       const user = await userModel.getUserById(id); // id로 사용자 검색
-      console.log("User Found: ", user); // 검색된 사용자 출력
 
       if (!user || user.length === 0) {
         return cb(new Error("User not found")); // 사용자 정보가 없으면 에러 반환
