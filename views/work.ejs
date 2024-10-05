@@ -7,17 +7,50 @@
     <title>Work Page</title>
     <!-- CSS 파일 추가 -->
     <link rel="stylesheet" href="/stylesheets/work.css">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/locales/ko.js'></script> <!-- 한국어 로케일 -->
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to the Work Page!</h1>
-        <p>You have successfully logged in.</p>
+    <!-- 전체 레이아웃 컨테이너 -->
+    <div class="layout-container">
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="content">
+            <!-- 왼쪽 레이어 (그래프) -->
+            <div class="left-layer">
+                <!-- 위쪽 그래프 레이어 -->
+                <div class="top-graph" id="topGraphContainer">
+                    <canvas id="topGraphCanvas"></canvas> <!-- 위쪽 그래프 Canvas -->
+                </div>
 
-        <!-- 로그아웃 버튼 -->
-        <button id="logoutBtn">Log Out</button>
+                <!-- 아래쪽 그래프 레이어 -->
+                <div class="bottom-graph" id="bottomGraphContainer">
+                    <canvas id="bottomGraphCanvas"></canvas> <!-- 아래쪽 그래프 Canvas -->
+                </div>
+            </div>
+            
+            <!-- 오른쪽 레이어 (캘린더) -->
+            <div class="right-layer">
+                <!-- 캘린더가 표시될 영역 -->
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 고정 메뉴바 -->
+        <div class="sidebar">
+            <a href="/work" class="logo">GymHelper</a>
+            <a href="/accountSettings" class="menu-item">마이페이지</a>
+            <a href="/community" class="menu-item">커뮤니티</a>
+            <button id="logoutBtn" class="menu-item logout">로그아웃</button>
+        </div>
     </div>
 
-    <!-- JavaScript 파일 추가 -->
-    <script src="/javascripts/work.js"></script>
+    <!-- jQuery 및 FullCalendar, Chart.js 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <!-- 분리된 JavaScript 파일 추가 -->
+    <script src="/javascripts/work.js"></script> <!-- work.js 파일로 JavaScript 코드 분리 -->
 </body>
 </html>

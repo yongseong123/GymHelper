@@ -5,49 +5,132 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* 메인 페이지 배경색으로 설정 */
+    height: 100%;
+    overflow: hidden; /* 전체 페이지에 스크롤바가 생기지 않도록 설정 */
+}
+
+/* 전체 레이아웃 컨테이너 */
+.layout-container {
+    display: flex;
+    height: 90vh; /* 전체 높이를 90vh로 설정하여 여백 확보 */
+    margin: 5vh 2vw; /* 상하 5vh, 좌우 2vw의 여백 설정 */
+}
+
+/* 메인 콘텐츠 영역 */
+.content {
+    display: flex;
+    flex: 1;
+    height: 100%;
     background-color: #f0f8ff;
 }
 
-.container {
+/* 왼쪽 레이어 (전체 영역을 반으로 나눔) */
+.left-layer {
+    display: flex;
+    flex-direction: column; /* 세로로 두 개의 레이어로 나눔 */
+    width: 55%; /* 전체의 55%를 차지 */
+    height: 100%; /* 전체 높이를 차지 */
+    margin-right: 20px; /* 오른쪽 레이어와의 간격 확보 */
+}
+
+/* 위쪽 그래프 레이어 */
+.top-graph {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f8ff;
+    border-bottom: 1px solid #ccc; /* 위쪽 그래프와 아래쪽 그래프 구분선 */
+    padding: 20px;
+}
+
+/* 아래쪽 그래프 레이어 */
+.bottom-graph {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f8ff;
+    padding: 20px;
+}
+
+/* 오른쪽 레이어 (캘린더) */
+.right-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* 전체의 40%로 줄여서 왼쪽으로 이동 */
+    height: 100%; /* 전체 높이를 차지 */
+    background-color: #f0f8ff;
+    padding: 10px; /* 여백 줄여서 캘린더가 더 왼쪽으로 이동 */
+    margin-left: 0px; /* 왼쪽 여백 제거 */
+}
+
+/* 오른쪽 고정 메뉴바 */
+.sidebar {
+    position: fixed; /* 스크롤해도 고정 위치 유지 */
+    right: 0;
+    top: 5vh; /* 상단에서 5vh 아래로 위치 */
+    width: 200px;
+    height: 80vh; /* 전체 높이를 80vh로 조정 */
+    background-color: #2c3e50;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh;
+    padding: 20px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px; /* 테두리 둥글게 설정 */
 }
 
-/* 제목 스타일 */
-h1 {
-    color: #333;
-    font-size: 36px;
-    margin-bottom: 10px;
+/* 로고 및 메뉴 아이템 스타일 */
+.logo {
+    font-size: 24px;
+    color: #ffffff;
+    text-decoration: none;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+
+.menu-item {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #34495e;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+/* 메뉴 아이템 호버 효과 */
+.menu-item:hover {
+    background-color: #1abc9c;
 }
 
 /* 로그아웃 버튼 스타일 */
-button#logoutBtn {
-    background-color: #008cba; /* 파란색 배경 */
-    border: none;
-    color: white;
-    padding: 15px 30px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 20px;
-    cursor: pointer;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* 부드러운 전환 효과 */
+.logout {
+    margin-top: auto; /* 메뉴바의 하단으로 위치시키기 위한 설정 */
+    margin-bottom: 20px; /* 하단으로부터 20px 위로 고정 */
+    background-color: #e74c3c;
+    padding: 12px 20px; /* 크기를 키워 가독성을 높임 */
+    width: 80%; /* 버튼 크기 설정 */
 }
 
-/* 버튼 호버 효과 */
-button#logoutBtn:hover {
-    background-color: #005f73; /* 호버 시 어두운 파란색 */
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 증가 */
+.logout:hover {
+    background-color: #c0392b;
 }
 
-/* 버튼 활성화 시 스타일 */
-button#logoutBtn:active {
-    background-color: #003f4f; /* 활성화 시 더 어두운 파란색 */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 감소 */
+/* 그래프 및 캘린더 컨테이너 크기 */
+#topGraphContainer, #bottomGraphContainer {
+    width: 93%; /* 그래프 컨테이너 너비 설정 */
+    height: 93%; /* 그래프 컨테이너 높이 설정 */
+}
+
+#calendar {
+    width: 60%; /* 캘린더 너비를 줄여서 메뉴바와의 간격 확보 */
+    height: 85%; /* 캘린더 높이를 줄여서 메뉴바와의 겹침 방지 */
+    margin-top: 100px; /* 캘린더를 아래로 이동 */
+    margin-right: 200px; /* 캘린더를 왼쪽으로 이동 */
 }
