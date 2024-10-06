@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/work.css"> <!-- 기존 work.css 스타일 사용 -->
+    <link rel="stylesheet" href="/stylesheets/community.css"> <!-- 추가 스타일 -->
+</head>
+<body>
+    <div class="main-container">
+        <!-- 오른쪽 고정 사이드바 추가 -->
+        <div class="sidebar">
+            <a href="/work" class="logo">GymHelper</a>
+            <a href="/accountSettings" class="menu-item">마이페이지</a>
+            <a href="/community" class="menu-item">커뮤니티</a>
+            <button id="writePostBtn" class="menu-item create-post">게시글 작성</button>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="board-layer">
+                    <h1 class="board-title">자유게시판</h1>
+                    <div class="post-list">
+                        <% if (posts && posts.length > 0) { %>
+                            <table class="post-table">
+                                <thead>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>제목</th>
+                                        <th>작성일</th>
+                                        <th>작성자</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% posts.forEach(post => { %>
+                                        <tr class="post-item" data-id="<%= post.board_id %>" data-title="<%= post.title %>" data-content="<%= post.content %>">
+                                            <td><%= post.board_id %></td>
+                                            <td><%= post.title %></td>
+                                            <td><%= new Date(post.regdate).toISOString().slice(0, 10) %></td>
+                                            <td><%= post.writer %></td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } else { %>
+                            <p>게시글이 없습니다.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게시글 작성 모달 창 -->
+        <div id="postModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>게시글 작성</h2>
+                <form id="postForm">
+                    <div class="form-group">
+                        <label for="postTitle">제목</label>
+                        <input type="text" id="postTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postContent">내용</label>
+                        <textarea id="postContent" name="content" rows="5" required></textarea>
+                    </div>
+                    <button type="button" id="submitPostBtn">등록</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 게시글 내용 보기 모달 창 -->
+        <div id="viewPostModal" class="modal">
+            <div class="modal-content">
+                <span class="close-view">&times;</span>
+                <h2 id="viewPostTitle">제목</h2>
+                <p id="viewPostContent">내용</p>
+                <div>
+                    <span id="viewPostDate">작성일</span> | <span id="viewPostWriter">작성자</span>
+                </div>
+
+                <!-- 댓글 목록 표시 -->
+                <div class="comment-section">
+                    <h3>댓글</h3>
+                    <div id="commentList">
+                        <!-- 댓글 목록이 여기에 동적으로 추가됩니다. -->
+                    </div>
+                </div>
+
+                <!-- 댓글 작성 폼 -->
+                <div class="comment-form">
+                    <h3>댓글 작성</h3>
+                    <form id="commentForm">
+                        <div class="form-group">
+                            <label for="commentContent">내용</label>
+                            <textarea id="commentContent" name="commentContent" rows="3" required></textarea>
+                        </div>
+                        <button type="button" id="submitCommentBtn">댓글 작성</button>
+                    </form>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button type="button" id="editPostBtn" class="modal-button">수정</button>
+                    <button type="button" id="deletePostBtn" class="modal-button">삭제</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게시글 수정 모달 창 -->
+        <div id="editPostModal" class="modal">
+            <div class="modal-content">
+                <span class="close-edit">&times;</span>
+                <h2>게시글 수정</h2>
+                <form id="editPostForm">
+                    <div class="form-group">
+                        <label for="editPostTitle">제목</label>
+                        <input type="text" id="editPostTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPostContent">내용</label>
+                        <textarea id="editPostContent" name="content" rows="5" required></textarea>
+                    </div>
+                    <button type="button" id="saveEditPostBtn">저장</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/javascripts/community.js"></script>
+</body>
+</html>
