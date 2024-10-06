@@ -79,6 +79,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // 댓글 시간 포맷 변환 함수
+    const formatDateTime = (dateTime) => {
+        const date = new Date(dateTime);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}-${hours}:${minutes}`;
+    };
+
     // 게시글 리스트 클릭 시 본문 보기 모달 창 열기
     const postItems = document.querySelectorAll(".post-item");
     postItems.forEach(item => {
@@ -109,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             commentItem.innerHTML = `
                                 <div class="comment-content">
                                     <strong>${comment.writer}</strong>: ${comment.content}
-                                    <div class="comment-date">${comment.regdate}</div>
+                                    <div class="comment-date">${formatDateTime(comment.regdate)}</div>
                                 </div>
                                 <button class="comment-delete-btn" data-id="${comment.reply_id}">삭제</button>
                             `;
