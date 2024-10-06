@@ -1,3 +1,4 @@
+/* accountSettings.css */
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: #f0f8ff;
@@ -14,7 +15,7 @@ body {
     border-radius: 4px;
     box-shadow: 0 0 8px rgba(0,0,0,0.3);
 }
-  
+
 .title-bar {
     background: #f6f6f6;
     padding: 6px 10px;
@@ -23,16 +24,16 @@ body {
     border-bottom: 1px solid #ccc;
     text-align: center;
 }
-  
+
 .title {
     font-weight: bold;
     color: #333;
 }
-  
+
 .signup-container {
     padding: 20px;
 }
-  
+
 .signup-form input {
     width: calc(100% - 20px);
     padding: 10px;
@@ -41,7 +42,7 @@ body {
     border-radius: 4px;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
-  
+
 button {
     width: 100%;
     padding: 10px;
@@ -53,23 +54,23 @@ button {
     font-size: 16px;
     cursor: pointer;
 }
-  
+
 button:hover {
     background: #0056b3;
 }
 
-.login-link {
+.login-link, .delete-account-link {
     margin-top: 15px;
     text-align: center;
 }
 
-.login-link a {
+.login-link a, .delete-account-link a {
     color: #007aff;
     text-decoration: none;
     font-size: 14px;
 }
 
-.login-link a:hover {
+.login-link a:hover, .delete-account-link a:hover {
     text-decoration: underline;
 }
 
@@ -81,18 +82,61 @@ button:hover {
     color: #333;
 }
 
-.delete-account-link {
-    margin-top: 15px;
-    text-align: center;
-}
-
 .delete-account-link a {
     color: #cf2300;
-    text-decoration: none;
-    font-size: 14px;
 }
 
-.delete-account-link a:hover {
-    text-decoration: underline;
+/* 추가된 오른쪽 고정 메뉴바 스타일 (work.ejs와 동일) */
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 5vh;
+    width: 200px;
+    height: 85vh;
+    background-color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+/* 로고 및 메뉴 아이템 스타일 */
+.logo {
+    font-size: 24px;
+    color: #ffffff;
+    text-decoration: none;
+    margin-bottom: 40px;
+    font-weight: bold;
     cursor: pointer;
+}
+
+.menu-item {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #34495e;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #1abc9c;
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+    background-color: #e74c3c;
+    padding: 12px 20px;
+    width: 80%;
+}
+
+.logout:hover {
+    background-color: #c0392b;
 }

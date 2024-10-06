@@ -3,34 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheets/accountSettings.css">
-    <script src="javascripts/accountSettings.js"></script>
-    <title>계정 관리</title>
+    <title>GymHelper - Account Settings</title>
+    <link rel="stylesheet" href="/stylesheets/accountSettings.css">
 </head>
 <body>
-    <div class="window">
-        <div class="title-bar">
-            <span class="title">계정 관리</span>
+    <div class="layout-container">
+        <div class="content">
+            <!-- 마이페이지 메인 콘텐츠 영역 -->
+            <div class="window">
+                <div class="title-bar">
+                    <span class="title">회원 정보 수정</span>
+                </div>
+                <div class="signup-container">
+                    <form class="signup-form" onsubmit="event.preventDefault(); accountSet();">
+                        <label for="username">새로운 사용자 이름</label>
+                        <input type="text" id="username" name="username" placeholder="새로운 사용자 이름을 입력하세요" required>
+
+                        <label for="password">새로운 비밀번호</label>
+                        <input type="password" id="password" name="password" placeholder="새로운 비밀번호를 입력하세요" required>
+
+                        <label for="confirmPassword">비밀번호 확인</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요" required>
+
+                        <button type="submit">회원정보 수정</button>
+                    </form>
+                    <div class="login-link">
+                        <a href="/work">메인 페이지로 돌아가기</a>
+                    </div>
+                    <div class="delete-account-link">
+                        <a href="#" onclick="deleteAccount();">회원 탈퇴</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="signup-container">
-            <form class="signup-form">
-                <label for="username">이름</label>
-                <input type="text" id="username" name="username" placeholder="Username" required>
-            
-                <label for="password">비밀번호</label>
-                <input type="password" id="password" name="password" placeholder="Password" required>
-            
-                <label for="confirmPassword">비밀번호 확인</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
-            </form>
-            <button onclick="accountSet()">계정 수정하기</button>
-            <div class="login-link">
-                <a href="/myGrades">뒤로가기</a>
-            </div>
-            <div class="delete-account-link">
-                <a onclick="deleteAccount()">계정 탈퇴하기</a>
-            </div>
+
+        <!-- 오른쪽 고정 메뉴바 -->
+        <div class="sidebar">
+            <a href="/work" class="logo">GymHelper</a>
+            <a href="/accountSettings" class="menu-item">마이페이지</a>
+            <a href="/community" class="menu-item">커뮤니티</a>
+            <button id="logoutBtn" class="logout">로그아웃</button>
         </div>
     </div>
+    <script src="/javascripts/accountSettings.js"></script>
 </body>
 </html>
