@@ -34,7 +34,112 @@
             <a href="/work" class="logo">GymHelper</a>
             <a href="/accountSettings" class="menu-item">마이페이지</a>
             <a href="/community" class="menu-item">커뮤니티</a>
+            <button id="myWorkoutsBtn" class="menu-item">내 운동 모아보기</button> <!-- 내 운동 모아보기 버튼 추가 -->
+            <button id="addWorkoutBtn" class="menu-item">운동 기록</button>
             <button id="logoutBtn" class="logout">로그아웃</button>
+        </div>
+    </div>
+    <!-- 내 운동 모아보기 모달 창 -->
+    <div id="myWorkoutsModal" class="modal">
+        <div class="modal-content large-modal"> <!-- 모달 창 너비를 넉넉하게 조정 -->
+            <span class="close">&times;</span>
+            <h2>내 운동 모아보기</h2>
+            <!-- 날짜 선택 필드 -->
+            <div class="form-group">
+                <label for="filterDate">날짜 선택</label>
+                <input type="date" id="filterDate">
+                <button id="filterDateBtn">날짜 검색</button>
+            </div>
+            <!-- 운동 기록 리스트 -->
+            <table id="myWorkoutsTable" class="workout-table">
+                <thead>
+                    <tr>
+                        <th>운동 번호</th>
+                        <th>운동 이름</th>
+                        <th>무게</th>
+                        <th>반복 횟수</th>
+                        <th>운동 부위</th>
+                        <th>운동 타겟</th>
+                        <th>운동 타입</th>
+                        <th>운동 날짜</th>
+                        <th>수정</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="myWorkoutsList">
+                    <!-- 운동 기록 리스트가 동적으로 추가될 부분 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 운동 기록 모달 창 -->
+    <div id="workoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>운동 기록 작성</h2>
+            <form id="workoutForm">
+                <!-- 운동 이름 입력 -->
+                <div class="form-group">
+                    <label for="work_name">운동 이름</label>
+                    <input type="text" id="work_name" name="work_name" placeholder="운동 이름을 입력하세요" required>
+                </div>
+
+                <!-- 무게 입력 -->
+                <div class="form-group">
+                    <label for="work_weight">무게 (kg)</label>
+                    <input type="number" id="work_weight" name="work_weight" placeholder="운동 무게를 입력하세요 (선택)">
+                </div>
+
+                <!-- 반복 횟수 입력 -->
+                <div class="form-group">
+                    <label for="work_count">반복 횟수</label>
+                    <input type="number" id="work_count" name="work_count" placeholder="반복 횟수를 입력하세요" required>
+                </div>
+
+                <!-- 운동 부위 선택 -->
+                <div class="form-group">
+                    <label for="work_part">운동 부위</label>
+                    <select id="work_part" name="work_part" required>
+                        <option value="">선택해주세요</option>
+                        <option value="가슴">가슴</option>
+                        <option value="등">등</option>
+                        <option value="어깨">어깨</option>
+                        <option value="이두">이두</option>
+                        <option value="삼두">삼두</option>
+                        <option value="하체">하체</option>
+                        <option value="복근">복근</option>
+                        <option value="유산소">유산소</option>
+                    </select>
+                </div>
+
+                <!-- 운동 타겟 선택 -->
+                <div class="form-group">
+                    <label for="work_target">운동 타겟</label>
+                    <select id="work_target" name="work_target">
+                        <option value="">선택해주세요</option>
+                    </select>
+                </div>
+
+                <!-- 운동 타입 선택 -->
+                <div class="form-group">
+                    <label for="work_type">운동 타입</label>
+                    <select id="work_type" name="work_type">
+                        <option value="">선택해주세요</option>
+                        <option value="프리웨이트">프리웨이트</option>
+                        <option value="머신">머신</option>
+                    </select>
+                </div>
+
+                <!-- 운동 날짜 입력 -->
+                <div class="form-group">
+                    <label for="work_day">운동 날짜</label>
+                    <input type="date" id="work_day" name="work_day" required>
+                </div>
+
+                <!-- 운동 기록 저장 버튼 -->
+                <button type="button" id="submitWorkoutBtn">등록</button>
+            </form>
         </div>
     </div>
     <script src="/javascripts/work.js"></script>

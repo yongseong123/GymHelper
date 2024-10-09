@@ -130,3 +130,138 @@ body, html {
     height: 90%; /* 캘린더 높이를 90%로 설정 */
     margin-right: 70px;
 }
+
+/* 모달 창 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 30px;
+    border: none;
+    width: 80%; /* 모달 너비 조정 */
+    max-width: 1000px; /* 최대 너비 설정 */
+    border-radius: 10px; /* 모서리 둥글게 */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    text-align: center;
+}
+
+.modal-content h2 {
+    text-align: center;
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px; /* 제목과 콘텐츠 사이 간격 */
+}
+
+.modal-content .form-group {
+    margin-bottom: 15px; /* 각 폼 그룹 간 간격 추가 */
+}
+
+.modal-content .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.modal-content .form-group input,
+.modal-content .form-group select,
+.modal-content .form-group textarea {
+    width: calc(100% - 20px); /* 입력창 너비 조정 */
+    padding: 10px;
+    border: 1px solid #ddd; /* 입력창 테두리 */
+    border-radius: 5px; /* 입력창 모서리 둥글게 */
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* 모달 창 버튼 스타일 */
+.modal-content button {
+    display: block;
+    width: 100%; /* 버튼 너비 전체 설정 */
+    padding: 12px;
+    background-color: #3498db; /* 기본 버튼 색상 */
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #2980b9; /* 호버 시 색상 변경 */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover, .close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+.workout-table {
+    width: 100%;
+    border-collapse: collapse; /* 테이블 내부 선을 겹치지 않게 설정 */
+    margin-top: 20px;
+    text-align: center; /* 글씨 중앙 정렬 */
+}
+
+.workout-table th,
+.workout-table td {
+    padding: 12px; /* 셀 간 여백 설정 */
+    text-align: center; /* 셀 내용 중앙 정렬 */
+    border: 1px solid #ddd; /* 테두리 선 설정 */
+    vertical-align: middle; /* 글씨를 세로 중앙 정렬 */
+}
+
+/* 표 제목 스타일 */
+.workout-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.edit-btn {
+    background-color: #2ecc71; /* 수정 버튼 초록색 */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #27ae60; /* 호버 시 색상 */
+}
+
+/* 삭제 버튼 스타일 */
+.delete-btn {
+    background-color: #e74c3c; /* 삭제 버튼 빨간색 */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b; /* 호버 시 색상 */
+}
