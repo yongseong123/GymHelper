@@ -123,3 +123,22 @@ exports.deleteWorkoutRecord = async (work_num, work_day, work_id) => {
       throw error;
   }
 };
+
+exports.getAllWorkouts = async (userId) => {
+    try {
+      const pool = await poolPromise;
+      const query = `
+        SELECT work_name, work_day 
+        FROM workout 
+        WHERE work_id = @userId;
+      `;
+      const result = await pool.request()
+        .input('userId', userId)
+        .query(query);
+  
+      return result.recordset;
+    } catch (error) {
+      console.error("전체 운동 기록 조회 오류:", error);
+      throw error;
+    }
+  };

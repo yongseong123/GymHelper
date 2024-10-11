@@ -72,3 +72,15 @@ exports.deleteWorkoutRecord = async (req, res) => {
       res.status(500).json({ success: false, message: "운동 기록 삭제에 실패했습니다." });
   }
 };
+
+exports.getAllWorkouts = async (req, res) => {
+    const userId = req.user.id;
+  
+    try {
+      const workouts = await worksModel.getAllWorkouts(userId);
+      res.status(200).json({ success: true, workouts });
+    } catch (error) {
+      console.error("전체 운동 기록 조회 컨트롤러 오류:", error);
+      res.status(500).json({ success: false, message: "전체 운동 기록 조회에 실패했습니다." });
+    }
+  };

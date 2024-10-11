@@ -14,4 +14,6 @@ router.put('/update', authMiddleware.isLoginStatus, worksController.updateWorkou
 // 운동 기록 삭제 엔드포인트
 router.delete('/delete', authMiddleware.isLoginStatus, worksController.deleteWorkoutRecord);
 
+router.post('/allWorkouts', authMiddleware.isLoginStatus, worksController.getAllWorkouts);
+
 module.exports = router;

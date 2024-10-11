@@ -265,3 +265,7 @@ body, html {
 .delete-btn:hover {
     background-color: #c0392b; /* 호버 시 색상 */
 }
+
+.fc-event {
+    cursor: pointer; /* 이벤트에 마우스를 올렸을 때 클릭 가능한 커서 */
+  }
