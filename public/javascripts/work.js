@@ -1,5 +1,3 @@
-// public/javascripts/work.js
-
 document.addEventListener("DOMContentLoaded", async () => {
   const calendarEl = document.getElementById('calendar');
   const workoutDetailsModal = document.getElementById('workoutDetailsModal'); // 모달 창 요소
@@ -26,29 +24,85 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // 위쪽 그래프 초기화
+  // 위쪽 그래프 초기화 - "월간 부위별 운동 통계"
   const topCtx = document.getElementById('topGraphCanvas').getContext('2d');
-  new Chart(topCtx, {
-    type: 'bar',
-    data: {
-      labels: ['월', '화', '수', '목', '금', '토', '일'],
-      datasets: [{
-        label: '운동 횟수',
-        data: [5, 6, 7, 8, 3, 2, 1],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true
+  const monthSelector = document.getElementById('monthSelector');
+  
+  // 전역 차트 객체 변수 선언
+  let topChart;
+
+  // API를 통해 월간 운동 통계 데이터 불러오기
+  async function loadMonthlyStats(year, month) {
+    try {
+      const response = await fetch('/api/works/monthlyStats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ year, month }),
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && Array.isArray(data.workoutStats)) {
+          const labels = ["가슴", "등", "어깨", "이두", "삼두", "하체", "복근", "유산소"];
+          const workoutCounts = labels.map(label => {
+            const stat = data.workoutStats.find(stat => stat.work_part === label);
+            return stat ? stat.count : 0;
+          });
+
+          // 기존 차트가 있으면 업데이트, 없으면 새로 생성
+          if (topChart) {
+            topChart.data.datasets[0].data = workoutCounts;
+            topChart.update();
+          } else {
+            // 차트 생성
+            topChart = new Chart(topCtx, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: '운동 횟수',
+                  data: workoutCounts,
+                  backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `월간 부위별 운동 통계`
+                  }
+                }
+              }
+            });
+          }
         }
+      } else {
+        console.error("월간 운동 통계 조회 실패:", response.statusText);
       }
+    } catch (error) {
+      console.error("월간 운동 통계 로드 오류:", error);
     }
+  }
+
+  // 초기 현재 년, 월 기준으로 그래프 로드
+  const today = new Date();
+  const initialYear = today.getFullYear();
+  const initialMonth = today.getMonth() + 1; // 0부터 시작하므로 +1
+  await loadMonthlyStats(initialYear, initialMonth);
+
+  // 월 선택 시 그래프 업데이트
+  monthSelector.addEventListener("change", async (event) => {
+    const selectedMonth = event.target.value;
+    await loadMonthlyStats(initialYear, selectedMonth);
   });
 
   // 아래쪽 그래프 초기화

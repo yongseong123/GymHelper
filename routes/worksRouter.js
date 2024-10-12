@@ -16,4 +16,7 @@ router.delete('/delete', authMiddleware.isLoginStatus, worksController.deleteWor
 
 router.post('/allWorkouts', authMiddleware.isLoginStatus, worksController.getAllWorkouts);
 
+// 월간 운동 통계 조회 엔드포인트
+router.post('/monthlyStats', authMiddleware.isLoginStatus, worksController.getMonthlyWorkoutStats);
+
 module.exports = router;

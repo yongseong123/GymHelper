@@ -43,6 +43,18 @@ body, html {
     padding: 20px;
 }
 
+#monthSelector {
+    position: absolute;
+    top: 100px; /* 그래프 상단으로부터 10px 아래에 위치 */
+    left: 80px; /* 그래프 왼쪽으로부터 10px 오른쪽에 위치 */
+    z-index: 10; /* 그래프 위에 표시되도록 z-index 설정 */
+    padding: 1px;
+    font-size: 1rem;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 /* 아래쪽 그래프 레이어 */
 .bottom-graph {
     flex: 1;

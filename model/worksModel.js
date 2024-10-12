@@ -142,3 +142,25 @@ exports.getAllWorkouts = async (userId) => {
       throw error;
     }
   };
+
+exports.getMonthlyWorkoutStats = async (userId, year, month) => {
+    try {
+      const pool = await poolPromise;
+      const query = `
+        SELECT work_part, COUNT(*) AS count
+        FROM workout
+        WHERE work_id = @userId AND YEAR(work_day) = @year AND MONTH(work_day) = @month
+        GROUP BY work_part;
+      `;
+      const result = await pool.request()
+        .input('userId', userId)
+        .input('year', year)
+        .input('month', month)
+        .query(query);
+      
+      return result.recordset;
+    } catch (error) {
+      console.error("월간 운동 통계 조회 오류:", error);
+      throw error;
+    }
+  };

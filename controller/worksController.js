@@ -84,3 +84,17 @@ exports.getAllWorkouts = async (req, res) => {
       res.status(500).json({ success: false, message: "전체 운동 기록 조회에 실패했습니다." });
     }
   };
+
+  // 월간 운동 통계 조회 컨트롤러
+exports.getMonthlyWorkoutStats = async (req, res) => {
+  const userId = req.user.id; // 로그인된 사용자의 ID
+  const { year, month } = req.body; // 클라이언트에서 년도와 월 정보를 전달받음
+
+  try {
+    const workoutStats = await worksModel.getMonthlyWorkoutStats(userId, year, month);
+    res.status(200).json({ success: true, workoutStats });
+  } catch (error) {
+    console.error("월간 운동 통계 조회 오류:", error);
+    res.status(500).json({ success: false, message: "월간 운동 통계 조회에 실패했습니다." });
+  }
+};
