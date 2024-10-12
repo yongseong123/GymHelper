@@ -19,4 +19,7 @@ router.post('/allWorkouts', authMiddleware.isLoginStatus, worksController.getAll
 // 월간 운동 통계 조회 엔드포인트
 router.post('/monthlyStats', authMiddleware.isLoginStatus, worksController.getMonthlyWorkoutStats);
 
+// 부위별 운동 통계 조회 엔드포인트
+router.post('/partStats', authMiddleware.isLoginStatus, worksController.getPartStats);
+
 module.exports = router;

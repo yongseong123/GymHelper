@@ -98,3 +98,19 @@ exports.getMonthlyWorkoutStats = async (req, res) => {
     res.status(500).json({ success: false, message: "월간 운동 통계 조회에 실패했습니다." });
   }
 };
+
+exports.getPartStats = async (req, res) => {
+  const { part } = req.body;
+  const userId = req.user.id;
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+
+  try {
+    const stats = await worksModel.getPartStats(userId, part, year, month);
+    res.status(200).json({ success: true, stats });
+  } catch (error) {
+    console.error("부위별 통계 조회 오류:", error);
+    res.status(500).json({ success: false, message: "부위별 통계 조회에 실패했습니다." });
+  }
+};

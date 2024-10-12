@@ -164,3 +164,29 @@ exports.getMonthlyWorkoutStats = async (userId, year, month) => {
       throw error;
     }
   };
+
+  exports.getPartStats = async (userId, part, year, month) => {
+    try {
+      const pool = await poolPromise;
+      const query = `
+        SELECT work_target, COUNT(*) AS count
+        FROM workout
+        WHERE work_id = @userId
+          AND work_part = @part
+          AND YEAR(work_day) = @year
+          AND MONTH(work_day) = @month
+        GROUP BY work_target;
+      `;
+      const result = await pool.request()
+        .input('userId', userId)
+        .input('part', part)
+        .input('year', year)
+        .input('month', month)
+        .query(query);
+      
+      return result.recordset;
+    } catch (error) {
+      console.error("부위별 운동 통계 조회 오류:", error);
+      throw error;
+    }
+  };

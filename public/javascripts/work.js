@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const workoutDetailsModal = document.getElementById('workoutDetailsModal'); // 모달 창 요소
   const workoutDetailsList = document.getElementById('workoutDetailsList'); // 운동 기록을 표시할 테이블 리스트 요소
   const logoutButton = document.getElementById("logoutBtn");
+
   if (logoutButton) {
     logoutButton.addEventListener("click", async () => {
       try {
@@ -40,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         body: JSON.stringify({ year, month }),
         credentials: 'include'
       });
+
       if (response.ok) {
         const data = await response.json();
         if (data.success && Array.isArray(data.workoutStats)) {
@@ -105,31 +107,83 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadMonthlyStats(initialYear, selectedMonth);
   });
 
-  // 아래쪽 그래프 초기화
+  // 아래쪽 그래프 초기화 및 수정된 코드
   const bottomCtx = document.getElementById('bottomGraphCanvas').getContext('2d');
-  new Chart(bottomCtx, {
-    type: 'line',
-    data: {
-      labels: ['월', '화', '수', '목', '금', '토', '일'],
-      datasets: [{
-        label: '운동 강도',
-        data: [3, 4, 5, 6, 2, 3, 4],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 2,
-        fill: false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true
+  let bottomChart;
+
+  // 각 부위에 맞는 타겟 설정
+  const partTargets = {
+    "가슴": ["인클라인", "플랫", "디클라인"],
+    "등": ["광배", "승모"],
+    "어깨": ["전면", "측면", "후면"],
+    "하체": ["앞", "뒤"]
+  };
+
+  // 버튼 클릭 시 서버에서 데이터를 받아와 그래프를 업데이트하는 함수
+  async function loadPartStats(part) {
+    try {
+      const response = await fetch('/api/works/partStats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ part }),
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && Array.isArray(data.stats)) {
+          const targetLabels = partTargets[part];
+          const workoutCounts = targetLabels.map(target => {
+            const stat = data.stats.find(stat => stat.work_target === target);
+            return stat ? stat.count : 0;
+          });
+
+          if (bottomChart) {
+            bottomChart.data.labels = targetLabels;
+            bottomChart.data.datasets[0].data = workoutCounts;
+            bottomChart.update();
+          } else {
+            bottomChart = new Chart(bottomCtx, {
+              type: 'line',
+              data: {
+                labels: targetLabels,
+                datasets: [{
+                  label: `타겟별 운동 통계`,
+                  data: workoutCounts,
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1,
+                  fill: false
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          }
         }
+      } else {
+        console.error("데이터를 불러오지 못했습니다.", response.statusText);
       }
+    } catch (error) {
+      console.error("데이터 로드 중 오류:", error);
     }
-  });
+  }
+
+  // 버튼 클릭 이벤트 핸들러 추가
+  document.getElementById("chestButton").addEventListener("click", () => loadPartStats("가슴"));
+  document.getElementById("backButton").addEventListener("click", () => loadPartStats("등"));
+  document.getElementById("shoulderButton").addEventListener("click", () => loadPartStats("어깨"));
+  document.getElementById("legButton").addEventListener("click", () => loadPartStats("하체"));
+
+  // 기본적으로 페이지 로드 시 가슴 부위 데이터를 로드
+  loadPartStats("가슴");
 
   if (calendarEl) {
     let calendarEvents = [];
