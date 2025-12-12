@@ -146,16 +146,20 @@ exports.getAllWorkouts = async (userId) => {
 exports.getMonthlyWorkoutStats = async (userId, year, month) => {
     try {
       const pool = await poolPromise;
+      // Calculate start/end dates for the given year and month to allow range-based index-friendly queries
+      const startDate = new Date(Number(year), Number(month) - 1, 1);
+      const endDate = new Date(Number(year), Number(month), 1); // first day of next month
+
       const query = `
         SELECT work_part, COUNT(*) AS count
         FROM workout
-        WHERE work_id = @userId AND YEAR(work_day) = @year AND MONTH(work_day) = @month
+        WHERE work_id = @userId AND work_day >= @startDate AND work_day < @endDate
         GROUP BY work_part;
       `;
       const result = await pool.request()
         .input('userId', userId)
-        .input('year', year)
-        .input('month', month)
+        .input('startDate', startDate)
+        .input('endDate', endDate)
         .query(query);
       
       return result.recordset;
@@ -168,20 +172,24 @@ exports.getMonthlyWorkoutStats = async (userId, year, month) => {
   exports.getPartStats = async (userId, part, year, month) => {
     try {
       const pool = await poolPromise;
+      // Use date range filter for performance, and group/coalesce targets to avoid null buckets
+      const startDate = new Date(Number(year), Number(month) - 1, 1);
+      const endDate = new Date(Number(year), Number(month), 1);
+
       const query = `
-        SELECT work_target, COUNT(*) AS count
+        SELECT COALESCE(work_target, '미지정') AS work_target, COUNT(*) AS count
         FROM workout
         WHERE work_id = @userId
           AND work_part = @part
-          AND YEAR(work_day) = @year
-          AND MONTH(work_day) = @month
-        GROUP BY work_target;
+          AND work_day >= @startDate
+          AND work_day < @endDate
+        GROUP BY COALESCE(work_target, '미지정');
       `;
       const result = await pool.request()
         .input('userId', userId)
         .input('part', part)
-        .input('year', year)
-        .input('month', month)
+        .input('startDate', startDate)
+        .input('endDate', endDate)
         .query(query);
       
       return result.recordset;

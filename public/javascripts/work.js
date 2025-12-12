@@ -120,12 +120,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   // 버튼 클릭 시 서버에서 데이터를 받아와 그래프를 업데이트하는 함수
+  let currentPart = '가슴';
+
   async function loadPartStats(part) {
     try {
+      currentPart = part;
+      const selectedMonth = monthSelector && monthSelector.value ? Number(monthSelector.value) : initialMonth;
       const response = await fetch('/api/works/partStats', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ part }),
+        body: JSON.stringify({ part, year: initialYear, month: selectedMonth }),
         credentials: 'include'
       });
 
@@ -181,6 +185,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("backButton").addEventListener("click", () => loadPartStats("등"));
   document.getElementById("shoulderButton").addEventListener("click", () => loadPartStats("어깨"));
   document.getElementById("legButton").addEventListener("click", () => loadPartStats("하체"));
+
+  // 월 변경 시, 현재 부위의 통계도 업데이트
+  if (monthSelector) {
+    monthSelector.addEventListener('change', async (event) => {
+      const selectedMonth = Number(event.target.value);
+      await loadMonthlyStats(initialYear, selectedMonth);
+      // update part stats for the same month
+      await loadPartStats(currentPart);
+    });
+  }
 
   // 기본적으로 페이지 로드 시 가슴 부위 데이터를 로드
   loadPartStats("가슴");

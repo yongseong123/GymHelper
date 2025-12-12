@@ -88,7 +88,16 @@ exports.getAllWorkouts = async (req, res) => {
   // 월간 운동 통계 조회 컨트롤러
 exports.getMonthlyWorkoutStats = async (req, res) => {
   const userId = req.user.id; // 로그인된 사용자의 ID
-  const { year, month } = req.body; // 클라이언트에서 년도와 월 정보를 전달받음
+  let { year, month } = req.body; // 클라이언트에서 년도와 월 정보를 전달받음
+
+  // 기본값 할당 및 검증
+  const today = new Date();
+  year = year ? Number(year) : today.getFullYear();
+  month = month ? Number(month) : today.getMonth() + 1;
+
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    return res.status(400).json({ success: false, message: '유효한 year와 month를 전달해주세요.' });
+  }
 
   try {
     const workoutStats = await worksModel.getMonthlyWorkoutStats(userId, year, month);
@@ -100,11 +109,20 @@ exports.getMonthlyWorkoutStats = async (req, res) => {
 };
 
 exports.getPartStats = async (req, res) => {
-  const { part } = req.body;
+  const { part, year: bodyYear, month: bodyMonth } = req.body;
   const userId = req.user.id;
+
+  if (!part) {
+    return res.status(400).json({ success: false, message: 'part 값을 전달해주세요.' });
+  }
+
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
+  const year = bodyYear ? Number(bodyYear) : today.getFullYear();
+  const month = bodyMonth ? Number(bodyMonth) : today.getMonth() + 1;
+
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    return res.status(400).json({ success: false, message: '유효한 year와 month를 전달해주세요.' });
+  }
 
   try {
     const stats = await worksModel.getPartStats(userId, part, year, month);
