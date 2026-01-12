@@ -13,12 +13,13 @@ exports.addWorkoutRecord = async (workoutData) => {
       const queryForMaxWorkNum = `
           SELECT ISNULL(MAX(work_num), 0) AS max_work_num
           FROM workout
-          WHERE work_day = @work_day;
+          WHERE work_day = @work_day AND work_id = @work_id;
       `;
 
       // 해당 날짜의 가장 큰 work_num을 조회하고, 다음 work_num을 설정
       const result = await pool.request()
           .input('work_day', work_day)
+          .input('work_id', work_id)
           .query(queryForMaxWorkNum);
       
       const nextWorkNum = result.recordset[0].max_work_num + 1;

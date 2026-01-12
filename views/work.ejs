@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,7 @@
 <body>
     <div class="layout-container">
         <div class="content">
-            <!-- 왼쪽 레이어: 위쪽과 아래쪽 그래프 -->
+            <!-- 왼쪽 레이어: 상단/하단 그래프 -->
             <div class="left-layer">
                 <div class="top-graph">
                     <select id="monthSelector">
@@ -29,7 +29,8 @@
                         <option value="10">10월</option>
                         <option value="11">11월</option>
                         <option value="12">12월</option>
-                      </select>
+                    </select>
+                    <select id="yearSelector"></select>
                     <canvas id="topGraphCanvas" width="400" height="200"></canvas>
                 </div>
                 <div class="bottom-graph">
@@ -54,23 +55,22 @@
             <a href="/work" class="logo">GymHelper</a>
             <a href="/accountSettings" class="menu-item">마이페이지</a>
             <a href="/community" class="menu-item">커뮤니티</a>
-            <button id="myWorkoutsBtn" class="menu-item">내 운동 모아보기</button> <!-- 내 운동 모아보기 버튼 추가 -->
+            <button id="myWorkoutsBtn" class="menu-item">내 운동 모아보기</button>
             <button id="addWorkoutBtn" class="menu-item">운동 기록</button>
             <button id="logoutBtn" class="logout">로그아웃</button>
         </div>
     </div>
-    <!-- 내 운동 모아보기 모달 창 -->
+
+    <!-- 내 운동 모아보기 모달 -->
     <div id="myWorkoutsModal" class="modal">
-        <div class="modal-content large-modal"> <!-- 모달 창 너비를 넉넉하게 조정 -->
+        <div class="modal-content large-modal">
             <span class="close">&times;</span>
             <h2>내 운동 모아보기</h2>
-            <!-- 날짜 선택 필드 -->
             <div class="form-group">
                 <label for="filterDate">날짜 선택</label>
                 <input type="date" id="filterDate">
                 <button id="filterDateBtn">날짜 검색</button>
             </div>
-            <!-- 운동 기록 리스트 -->
             <table id="myWorkoutsTable" class="workout-table">
                 <thead>
                     <tr>
@@ -87,37 +87,32 @@
                     </tr>
                 </thead>
                 <tbody id="myWorkoutsList">
-                    <!-- 운동 기록 리스트가 동적으로 추가될 부분 -->
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- 운동 기록 모달 창 -->
+    <!-- 운동 기록 모달 -->
     <div id="workoutModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>운동 기록 작성</h2>
             <form id="workoutForm">
-                <!-- 운동 이름 입력 -->
                 <div class="form-group">
                     <label for="work_name">운동 이름</label>
                     <input type="text" id="work_name" name="work_name" placeholder="운동 이름을 입력하세요" required>
                 </div>
 
-                <!-- 무게 입력 -->
                 <div class="form-group">
                     <label for="work_weight">무게 (kg)</label>
                     <input type="number" id="work_weight" name="work_weight" placeholder="운동 무게를 입력하세요 (선택)">
                 </div>
 
-                <!-- 반복 횟수 입력 -->
                 <div class="form-group">
                     <label for="work_count">반복 횟수</label>
                     <input type="number" id="work_count" name="work_count" placeholder="반복 횟수를 입력하세요" required>
                 </div>
 
-                <!-- 운동 부위 선택 -->
                 <div class="form-group">
                     <label for="work_part">운동 부위</label>
                     <select id="work_part" name="work_part" required>
@@ -133,7 +128,6 @@
                     </select>
                 </div>
 
-                <!-- 운동 타겟 선택 -->
                 <div class="form-group">
                     <label for="work_target">운동 타겟</label>
                     <select id="work_target" name="work_target">
@@ -141,7 +135,6 @@
                     </select>
                 </div>
 
-                <!-- 운동 타입 선택 -->
                 <div class="form-group">
                     <label for="work_type">운동 타입</label>
                     <select id="work_type" name="work_type">
@@ -151,13 +144,11 @@
                     </select>
                 </div>
 
-                <!-- 운동 날짜 입력 -->
                 <div class="form-group">
                     <label for="work_day">운동 날짜</label>
                     <input type="date" id="work_day" name="work_day" required>
                 </div>
 
-                <!-- 운동 기록 저장 버튼 -->
                 <button type="button" id="submitWorkoutBtn">등록</button>
             </form>
         </div>

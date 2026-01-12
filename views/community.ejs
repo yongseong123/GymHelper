@@ -1,16 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
-    <link rel="stylesheet" href="/stylesheets/work.css"> <!-- 기존 work.css 스타일 사용 -->
-    <link rel="stylesheet" href="/stylesheets/community.css"> <!-- 추가 스타일 -->
+    <link rel="stylesheet" href="/stylesheets/work.css">
+    <link rel="stylesheet" href="/stylesheets/community.css">
 </head>
 <body>
     <div class="main-container">
-        <!-- 오른쪽 고정 사이드바 추가 -->
         <div class="sidebar">
             <a href="/work" class="logo">GymHelper</a>
             <a href="/accountSettings" class="menu-item">마이페이지</a>
@@ -52,7 +51,6 @@
             </div>
         </div>
 
-        <!-- 게시글 작성 모달 창 -->
         <div id="postModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -71,25 +69,21 @@
             </div>
         </div>
 
-        <!-- 게시글 내용 보기 모달 창 -->
         <div id="viewPostModal" class="modal">
             <div class="modal-content">
                 <span class="close-view">&times;</span>
                 <h2 id="viewPostTitle">제목</h2>
                 <p id="viewPostContent">내용</p>
-                <div>
+                <div class="post-meta">
                     <span id="viewPostDate">작성일</span> | <span id="viewPostWriter">작성자</span>
                 </div>
 
-                <!-- 댓글 목록 표시 -->
                 <div class="comment-section">
                     <h3>댓글</h3>
                     <div id="commentList">
-                        <!-- 댓글 목록이 여기에 동적으로 추가됩니다. -->
                     </div>
                 </div>
 
-                <!-- 댓글 작성 폼 -->
                 <div class="comment-form">
                     <h3>댓글 작성</h3>
                     <form id="commentForm">
@@ -108,7 +102,6 @@
             </div>
         </div>
 
-        <!-- 게시글 수정 모달 창 -->
         <div id="editPostModal" class="modal">
             <div class="modal-content">
                 <span class="close-edit">&times;</span>

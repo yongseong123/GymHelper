@@ -1,18 +1,18 @@
-async function logout() {
-    console.log('logout');
-    try {
-        const response = await fetch('http://localhost:3000/api/users/logOut', {
-            method: 'POST',
-        });
+﻿async function logout() {
+  try {
+    const response = await fetch('/api/users/logOut', {
+      method: 'POST',
+      credentials: 'include'
+    });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            return alert(errorData.message || '로그아웃에 실패했습니다.');
-        }
-
-        // 로그아웃 성공 시 페이지 리로딩
-        window.location.reload();
-    } catch (error) {
-        alert(error.message);
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      alert(data.message || '로그아웃에 실패했습니다.');
+      return;
     }
+
+    window.location.reload();
+  } catch (error) {
+    alert(error.message || '로그아웃 중 오류가 발생했습니다.');
+  }
 }

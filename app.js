@@ -4,19 +4,22 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const dotenv = require("dotenv");
+
+dotenv.config();
 const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
 const passport = require("passport");
-const passportConfig = require("./passport"); // passport/index.js 폴더 임포트(index.js는 생략가능)
+const passportConfig = require("./passport"); // passport/index.js ?�더 ?�포??index.js???�략가??
 
 const indexRouter = require('./routes/indexRouter');
 const usersRouter = require('./routes/usersRouter');
 const worksRouter = require('./routes/worksRouter');
 const communityRouter = require('./routes/communityRouter');
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SERVER_URL = process.env.SERVER_URL || `http://localhost:${PORT}`; // SERVER_URL 가져오기
+const SERVER_URL = process.env.SERVER_URL || `http://localhost:${PORT}`; // SERVER_URL 가?�오�?
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,15 +30,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-dotenv.config();
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET, // 세션 암호화 키
-    resave: false, // 세션 데이터가 수정되지 않으면 저장하지 않음
-    saveUninitialized: false, // 초기화되지 않은 세션은 저장하지 않음
-    store: new SQLiteStore({ db: "session.db", dir: "./session" }), // SQLite를 세션 저장소로 사용
-    cookie: { maxAge: 3600000 }, // 쿠키 유효 시간 설정 (1시간)
+    secret: process.env.SESSION_SECRET, // ?�션 ?�호????
+    resave: false, // ?�션 ?�이?��? ?�정?��? ?�으�??�?�하지 ?�음
+    saveUninitialized: false, // 초기?�되지 ?��? ?�션?� ?�?�하지 ?�음
+    store: new SQLiteStore({ db: "session.db", dir: "./session" }), // SQLite�??�션 ?�?�소�??�용
+    cookie: { maxAge: 3600000 }, // 쿠키 ?�효 ?�간 ?�정 (1?�간)
   })
 );
 
