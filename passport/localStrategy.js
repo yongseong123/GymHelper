@@ -7,10 +7,10 @@ const createError = require("http-errors");
 module.exports = () => {
   passport.use(
     new LocalStrategy(
-      { usernameField: 'id', passwordField: 'password' }, // usernameField를 'id'로 설정
+      { usernameField: 'id', passwordField: 'password' },
       async (id, password, cb) => {
         try {
-          const users = await userModel.getUserById(id); // id로 검색
+          const users = await userModel.getUserById(id);
 
           if (users.length === 0) return cb(null, false, createError(401, "not_found_id_error"));
 

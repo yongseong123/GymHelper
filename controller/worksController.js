@@ -1,100 +1,97 @@
 const worksModel = require('../model/worksModel');
 
-// ?´ë™ ?°ì´??ì¶”ê?
 exports.addWorkoutRecord = async (req, res) => {
   const { work_name, work_weight, work_count, work_part, work_target, work_type, work_day } = req.body;
-  const work_id = req.user.id; // ë¡œê·¸?¸ëœ ?¬ìš©?ì˜ IDë¥?ê°€?¸ì˜´
+  const work_id = req.user.id;
 
   try {
-      const workoutData = {
-          work_name,
-          work_weight: work_weight || null, // ë¬´ê²Œê°€ ?…ë ¥?˜ì? ?Šì? ê²½ìš° null ì²˜ë¦¬
-          work_count,
-          work_part,
-          work_target: work_target || null, // ?€ê²Ÿì´ ? íƒ?˜ì? ?Šì? ê²½ìš° null ì²˜ë¦¬
-          work_type: work_type || null, // ?´ë™ ?€?…ì´ ? íƒ?˜ì? ?Šì? ê²½ìš° null ì²˜ë¦¬
-          work_day,
-          work_id
-      };
+    const workoutData = {
+      work_name,
+      work_weight: work_weight || null,
+      work_count,
+      work_part,
+      work_target: work_target || null,
+      work_type: work_type || null,
+      work_day,
+      work_id
+    };
 
-      const result = await worksModel.addWorkoutRecord(workoutData);
-
-      res.status(200).json(result); // ?±ê³µ ?‘ë‹µ ë°˜í™˜
+    const result = await worksModel.addWorkoutRecord(workoutData);
+    res.ok({ message: result.message });
   } catch (error) {
-      console.error("?´ë™ ê¸°ë¡ ì¶”ê? ì»¨íŠ¸ë¡¤ëŸ¬ ?¤ë¥˜:", error);
-      res.status(500).json({ success: false, message: "?´ë™ ê¸°ë¡ ì¶”ê????¤íŒ¨?ˆìŠµ?ˆë‹¤." });
+    console.error("Add workout error:", error);
+    res.fail("Failed to add workout record.", 500);
   }
 };
 
-// ?¹ì • ? ì§œ???¬ìš©???´ë™ ê¸°ë¡ ì¡°íšŒ ì»¨íŠ¸ë¡¤ëŸ¬
 exports.getWorkoutsByDate = async (req, res) => {
   const userId = req.user.id;
-  const { date } = req.body; // ? ì§œ???´ë¼?´ì–¸?¸ë¡œë¶€???„ë‹¬ë°›ìŒ
+  const { date } = req.body;
 
   try {
-      const workouts = await worksModel.getWorkoutsByDate(userId, date);
-      res.status(200).json({ success: true, workouts });
+    const workouts = await worksModel.getWorkoutsByDate(userId, date);
+    res.ok({ workouts });
   } catch (error) {
-      console.error("?´ë™ ê¸°ë¡ ì¡°íšŒ ì»¨íŠ¸ë¡¤ëŸ¬ ?¤ë¥˜:", error);
-      res.status(500).json({ success: false, message: "?´ë™ ê¸°ë¡ ì¡°íšŒ???¤íŒ¨?ˆìŠµ?ˆë‹¤." });
+    console.error("Get workouts by date error:", error);
+    res.fail("Failed to fetch workout records.", 500);
   }
 };
 
-// ?´ë™ ê¸°ë¡ ?˜ì • ì»¨íŠ¸ë¡¤ëŸ¬
 exports.updateWorkoutRecord = async (req, res) => {
   const { work_num, work_day, work_name, work_weight, work_count, work_part, work_target, work_type } = req.body;
-  const work_id = req.user.id; // ë¡œê·¸?¸ëœ ?¬ìš©?ì˜ IDë¥?ê°€?¸ì˜´
+  const work_id = req.user.id;
 
   try {
-      // ëª¨ë¸ ?¨ìˆ˜ ?¸ì¶œ?˜ì—¬ ?´ë™ ê¸°ë¡ ?˜ì •
-      const result = await worksModel.updateWorkoutRecord(work_num, work_day, work_id, {
-          work_name, work_weight, work_count, work_part, work_target, work_type
-      });
-      res.status(200).json(result); // ?±ê³µ ?‘ë‹µ ë°˜í™˜
+    const result = await worksModel.updateWorkoutRecord(work_num, work_day, work_id, {
+      work_name,
+      work_weight,
+      work_count,
+      work_part,
+      work_target,
+      work_type
+    });
+    res.ok({ message: result.message });
   } catch (error) {
-      console.error("?´ë™ ê¸°ë¡ ?˜ì • ì»¨íŠ¸ë¡¤ëŸ¬ ?¤ë¥˜:", error);
-      res.status(500).json({ success: false, message: "?´ë™ ê¸°ë¡ ?˜ì •???¤íŒ¨?ˆìŠµ?ˆë‹¤." });
+    console.error("Update workout error:", error);
+    res.fail("Failed to update workout record.", 500);
   }
 };
 
-// ?´ë™ ê¸°ë¡ ?? œ ì»¨íŠ¸ë¡¤ëŸ¬
 exports.deleteWorkoutRecord = async (req, res) => {
   const { work_num, work_day } = req.body;
-  const work_id = req.user.id; // ë¡œê·¸?¸ëœ ?¬ìš©?ì˜ IDë¥?ê°€?¸ì˜´
+  const work_id = req.user.id;
 
   try {
-      // ëª¨ë¸ ?¨ìˆ˜ ?¸ì¶œ?˜ì—¬ ?´ë™ ê¸°ë¡ ?? œ
-      const result = await worksModel.deleteWorkoutRecord(work_num, work_day, work_id);
-      res.status(200).json(result); // ?±ê³µ ?‘ë‹µ ë°˜í™˜
+    const result = await worksModel.deleteWorkoutRecord(work_num, work_day, work_id);
+    res.ok({ message: result.message });
   } catch (error) {
-      console.error("?´ë™ ê¸°ë¡ ?? œ ì»¨íŠ¸ë¡¤ëŸ¬ ?¤ë¥˜:", error);
-      res.status(500).json({ success: false, message: "?´ë™ ê¸°ë¡ ?? œ???¤íŒ¨?ˆìŠµ?ˆë‹¤." });
+    console.error("Delete workout error:", error);
+    res.fail("Failed to delete workout record.", 500);
   }
 };
 
 exports.getAllWorkouts = async (req, res) => {
-    const userId = req.user.id;
-  
-    try {
-      const workouts = await worksModel.getAllWorkouts(userId);
-      res.status(200).json({ success: true, workouts });
-    } catch (error) {
-      console.error("?„ì²´ ?´ë™ ê¸°ë¡ ì¡°íšŒ ì»¨íŠ¸ë¡¤ëŸ¬ ?¤ë¥˜:", error);
-      res.status(500).json({ success: false, message: "?„ì²´ ?´ë™ ê¸°ë¡ ì¡°íšŒ???¤íŒ¨?ˆìŠµ?ˆë‹¤." });
-    }
-  };
+  const userId = req.user.id;
 
-  // ?”ê°„ ?´ë™ ?µê³„ ì¡°íšŒ ì»¨íŠ¸ë¡¤ëŸ¬
+  try {
+    const workouts = await worksModel.getAllWorkouts(userId);
+    res.ok({ workouts });
+  } catch (error) {
+    console.error("Get all workouts error:", error);
+    res.fail("Failed to fetch workouts.", 500);
+  }
+};
+
 exports.getMonthlyWorkoutStats = async (req, res) => {
-  const userId = req.user.id; // ë¡œê·¸?¸ëœ ?¬ìš©?ì˜ ID
-  const { year, month } = req.body; // ?´ë¼?´ì–¸?¸ì—???„ë„?€ ???•ë³´ë¥??„ë‹¬ë°›ìŒ
+  const userId = req.user.id;
+  const { year, month } = req.body;
 
   try {
     const workoutStats = await worksModel.getMonthlyWorkoutStats(userId, year, month);
-    res.status(200).json({ success: true, workoutStats });
+    res.ok({ workoutStats });
   } catch (error) {
-    console.error("?”ê°„ ?´ë™ ?µê³„ ì¡°íšŒ ?¤ë¥˜:", error);
-    res.status(500).json({ success: false, message: "?”ê°„ ?´ë™ ?µê³„ ì¡°íšŒ???¤íŒ¨?ˆìŠµ?ˆë‹¤." });
+    console.error("Get monthly workout stats error:", error);
+    res.fail("Failed to fetch monthly workout stats.", 500);
   }
 };
 
@@ -111,9 +108,9 @@ exports.getPartStats = async (req, res) => {
 
   try {
     const stats = await worksModel.getPartStats(userId, part, resolvedYear, resolvedMonth);
-    res.status(200).json({ success: true, stats });
+    res.ok({ stats });
   } catch (error) {
-    console.error("ë¶€?„ë³„ ?µê³„ ì¡°íšŒ ?¤ë¥˜:", error);
-    res.status(500).json({ success: false, message: "ë¶€?„ë³„ ?µê³„ ì¡°íšŒ???¤íŒ¨?ˆìŠµ?ˆë‹¤." });
+    console.error("Get part stats error:", error);
+    res.fail("Failed to fetch part stats.", 500);
   }
 };
