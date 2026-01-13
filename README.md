@@ -87,3 +87,61 @@ GymHelper/
 ├─ views/                # EJS 템플릿
 ├─ public/               # CSS, 이미지 등 정적 파일
 └─ bin/                  # 실행 스크립트
+
+▶️ 실행 방법 (로컬)
+# 1. 저장소 클론
+git clone https://github.com/yongseong123/GymHelper.git
+
+# 2. 디렉터리 이동
+cd GymHelper
+
+# 3. 패키지 설치
+npm install
+
+# 4. 서버 실행
+npm start
+
+
+👉 기본 접속 주소
+
+http://localhost:3000
+
+🔑 환경 변수
+PORT=3000
+SESSION_SECRET=your_session_secret
+
+변수명	설명
+PORT	서버 포트
+SESSION_SECRET	세션 암호화 키
+
+⚠️ .env 파일은 Git에 커밋하지 않는 것을 권장합니다.
+
+🏗 아키텍처 설계 포인트
+
+MVC 패턴 적용
+
+역할 분리로 유지보수성 강화
+
+Controller 중심 설계
+
+Route는 요청 분기만 담당
+
+확장 가능한 인증 구조
+
+Passport 디렉터리 분리
+
+기록 중심 데이터 흐름
+
+누적 데이터 기반 기능 확장 용이
+
+🚀 향후 개선 방향
+
+📊 운동 기록 통계 시각화 (주/월/연)
+
+🏋️ 루틴 템플릿 기능
+
+🔐 OAuth 로그인 (Google / GitHub)
+
+🗄 DB 연동 (MongoDB / PostgreSQL)
+
+📱 모바일 UI 최적화
