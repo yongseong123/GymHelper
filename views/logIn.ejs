@@ -4,23 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymHelper - 로그인</title>
-    <link rel="stylesheet" href="/vendor/bootstrap.min.css">
-    <link rel="stylesheet" href="stylesheets/logIn.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Pretendard", "Noto Sans KR", "sans-serif"]
+            }
+          }
+        }
+      };
+    </script>
     <script src="javascripts/logIn.js"></script>
 </head>
-<body>
-  <div class="window">
-      <div class="title-bar">
-          <span class="title">GymHelper</span>
-      </div>
-      <div class="login-container">
-          <form class="login-form">
-              <input type="text" placeholder="아이디" name="username" id="username" required>
-              <input type="password" placeholder="비밀번호" name="password" id="password" required>
-              <button type="button" onclick="login()">로그인</button>
-          </form>
-          <div class="signup-link">
-            <a href="/signUp">회원가입</a>
+<body class="min-h-screen bg-gradient-to-br from-zinc-100 via-orange-50 to-cyan-50 font-sans text-zinc-800">
+  <div class="mx-auto grid min-h-screen w-full max-w-md place-items-center p-6">
+      <div class="window w-full overflow-hidden rounded-3xl border border-white/70 bg-white/85 shadow-2xl backdrop-blur">
+          <div class="title-bar border-b border-zinc-200/80 px-6 py-4">
+              <span class="title text-sm font-semibold tracking-wide text-zinc-700">GymHelper</span>
+          </div>
+          <div class="login-container p-6">
+              <form class="login-form">
+                  <input type="text" placeholder="아이디" name="username" id="username" required class="mb-3 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100">
+                  <input type="password" placeholder="비밀번호" name="password" id="password" required class="mb-4 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100">
+                  <button type="button" onclick="login()" class="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-zinc-800">로그인</button>
+              </form>
+              <div class="signup-link mt-4 text-center">
+                <a href="/signUp" class="text-sm text-zinc-500 underline-offset-4 hover:text-zinc-700 hover:underline">회원가입</a>
+              </div>
           </div>
       </div>
   </div>

@@ -86,14 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     comments.forEach(comment => {
       const commentItem = document.createElement("div");
-      commentItem.className = "comment-item";
+      commentItem.className = "comment-item grid grid-cols-[1fr_auto] gap-3 rounded-xl border border-zinc-200 bg-white p-3";
       commentItem.innerHTML = `
-        <div class="comment-content">
-          <strong>${comment.writer}</strong>
-          <div>${comment.content}</div>
-          <div class="comment-date">${formatDateTime(comment.regdate)}</div>
+        <div class="comment-content text-sm text-zinc-700">
+          <strong class="block text-zinc-900">${comment.writer}</strong>
+          <div class="my-1 whitespace-pre-wrap break-words">${comment.content}</div>
+          <div class="comment-date text-xs text-zinc-400">${formatDateTime(comment.regdate)}</div>
         </div>
-        <button class="comment-delete-btn" data-id="${comment.reply_id}">삭제</button>
+        <button class="comment-delete-btn h-fit rounded-lg bg-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-200" data-id="${comment.reply_id}">삭제</button>
       `;
       commentList.appendChild(commentItem);
 

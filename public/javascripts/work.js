@@ -248,51 +248,6 @@ function initCalendar() {
   const calendarEl = $("calendar");
   if (!calendarEl) return;
 
-  const workoutDetailsModal = $("workoutDetailsModal");
-  const workoutDetailsList = $("workoutDetailsList");
-
-  const loadWorkoutsForDate = async (date) => {
-    if (!workoutDetailsList) return;
-    workoutDetailsList.innerHTML = '';
-
-    try {
-      const formattedDate = formatDate(date);
-      const response = await fetch('/api/works/myWorkouts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: formattedDate })
-      });
-
-      const data = await response.json();
-      if (!data.success) {
-        console.error("해당 날짜의 운동 기록 조회 실패.");
-        return;
-      }
-
-      if (data.workouts.length > 0) {
-        data.workouts.forEach(workout => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${workout.work_name}</td>
-            <td>${workout.work_weight || '-'}</td>
-            <td>${workout.work_count}</td>
-            <td>${workout.work_part}</td>
-            <td>${workout.work_target || '-'}</td>
-            <td>${workout.work_type || '-'}</td>
-            <td>${formatDate(workout.work_day)}</td>
-          `;
-          workoutDetailsList.appendChild(row);
-        });
-      } else {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `<td colspan="7">해당 날짜에 운동 기록이 없습니다.</td>`;
-        workoutDetailsList.appendChild(emptyRow);
-      }
-    } catch (error) {
-      console.error("해당 날짜 운동 기록 로드 오류:", error);
-    }
-  };
-
   const initCalendarEvents = async () => {
     try {
       const response = await fetch('/api/works/allWorkouts', {
@@ -333,13 +288,6 @@ function initCalendar() {
       editable: true,
       displayEventTime: false,
       events: calendarEvents,
-      eventClick: async function(info) {
-        const clickedDate = info.event.startStr;
-        await loadWorkoutsForDate(clickedDate);
-        if (workoutDetailsModal) {
-          workoutDetailsModal.style.display = 'block';
-        }
-      },
       eventMouseEnter: function(info) {
         info.el.style.cursor = 'pointer';
       }
@@ -347,13 +295,6 @@ function initCalendar() {
 
     calendar.render();
   });
-
-  const closeModalBtn = $("closeModalBtn");
-  if (closeModalBtn && workoutDetailsModal) {
-    closeModalBtn.addEventListener('click', () => {
-      workoutDetailsModal.style.display = 'none';
-    });
-  }
 }
 
 function initWorkouts() {
@@ -472,14 +413,16 @@ function initWorkouts() {
     $("work_day").value = workout.work_day;
 
     submitWorkoutBtn.textContent = "수정";
-    submitWorkoutBtn.classList.add('edit-btn');
+    submitWorkoutBtn.classList.remove('bg-zinc-900', 'hover:bg-zinc-800');
+    submitWorkoutBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
     submitWorkoutBtn.removeEventListener("click", addWorkoutHandler);
     submitWorkoutBtn.onclick = () => updateWorkout(workout);
   };
 
   const resetSubmitButton = () => {
     submitWorkoutBtn.textContent = "등록";
-    submitWorkoutBtn.classList.remove('edit-btn');
+    submitWorkoutBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+    submitWorkoutBtn.classList.add('bg-zinc-900', 'hover:bg-zinc-800');
     submitWorkoutBtn.onclick = addWorkoutHandler;
   };
 
@@ -499,16 +442,16 @@ function initWorkouts() {
       data.workouts.forEach(workout => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${workout.work_num}</td>
-          <td>${workout.work_name}</td>
-          <td>${workout.work_weight || '-'}</td>
-          <td>${workout.work_count}</td>
-          <td>${workout.work_part}</td>
-          <td>${workout.work_target || '-'}</td>
-          <td>${workout.work_type || '-'}</td>
-          <td>${formatDate(workout.work_day)}</td>
-          <td><button class="edit-btn">수정</button></td>
-          <td><button class="delete-btn">삭제</button></td>
+          <td class="px-3 py-3 text-center">${workout.work_num}</td>
+          <td class="px-3 py-3">${workout.work_name}</td>
+          <td class="px-3 py-3 text-center">${workout.work_weight || '-'}</td>
+          <td class="px-3 py-3 text-center">${workout.work_count}</td>
+          <td class="px-3 py-3 text-center">${workout.work_part}</td>
+          <td class="px-3 py-3 text-center">${workout.work_target || '-'}</td>
+          <td class="px-3 py-3 text-center">${workout.work_type || '-'}</td>
+          <td class="px-3 py-3 text-center">${formatDate(workout.work_day)}</td>
+          <td class="px-3 py-3 text-center"><button class="edit-btn rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-600">수정</button></td>
+          <td class="px-3 py-3 text-center"><button class="delete-btn rounded-lg bg-rose-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-600">삭제</button></td>
         `;
 
         row.querySelector(".edit-btn").addEventListener("click", () => openEditModal(workout));

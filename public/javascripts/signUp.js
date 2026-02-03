@@ -1,8 +1,4 @@
-﻿function goBack() {
-  window.history.back();
-}
-
-async function signUp() {
+﻿async function signUp() {
   const id = document.getElementById('id').value;
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
@@ -34,7 +30,7 @@ async function signUp() {
         id,
         username,
         password,
-        checkedPassword
+        checkedPassword,
       }),
     });
 
