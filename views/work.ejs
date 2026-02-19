@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="gym-light">
 <head>
     <meta charset="UTF-8">
@@ -24,7 +24,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/ko.js"></script>
 </head>
 <body class="app-shell-bg">
-    <div class="drawer min-h-screen lg:drawer-open">
+    <div class="drawer min-h-screen lg:drawer-open" data-app-shell>
         <input id="app-shell-drawer-work" type="checkbox" class="drawer-toggle">
 
         <div class="drawer-content flex min-h-screen flex-col">
@@ -170,105 +170,140 @@
         </div>
     </div>
 
-    <div id="myWorkoutsModal" class="modal" role="dialog" aria-modal="true">
-        <div class="modal-box relative w-11/12 max-w-6xl border border-base-300 bg-base-100">
-            <button type="button" class="close btn btn-sm btn-circle btn-ghost absolute right-4 top-4" aria-label="닫기">x</button>
-            <h2 class="mb-4 text-xl font-semibold">내 운동 모아보기</h2>
+    <div id="myWorkoutsModal" class="fixed inset-0 z-50 hidden app-modal" data-modal-overlay="true" aria-hidden="true">
+        <div class="app-modal-backdrop" data-modal-backdrop="true"></div>
+        <div class="app-modal-shell">
+            <div class="app-modal-panel sm:max-w-6xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="myWorkoutsModalTitle" aria-describedby="myWorkoutsModalDesc">
+                <div class="app-modal-handle"><span></span></div>
+                <header class="app-modal-header">
+                    <div>
+                        <h2 id="myWorkoutsModalTitle" class="text-lg font-bold sm:text-xl">내 운동 모아보기</h2>
+                        <p id="myWorkoutsModalDesc" class="mt-1 text-sm text-base-content/70">날짜별로 운동 기록을 필터링하고 수정/삭제할 수 있습니다.</p>
+                    </div>
+                    <button type="button" class="close btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                </header>
 
-            <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end">
-                <label class="form-control w-full max-w-xs">
-                    <span class="label-text pb-1 text-sm">날짜 선택</span>
-                    <input type="date" id="filterDate" class="input input-bordered w-full">
-                </label>
-                <button id="filterDateBtn" class="btn btn-primary">날짜 검색</button>
-            </div>
+                <div class="app-modal-body space-y-4">
+                    <div class="rounded-box border border-base-300 bg-base-200/55 p-3 sm:p-4">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                            <label class="form-control w-full sm:max-w-xs">
+                                <span class="label-text pb-1 text-sm">날짜 선택</span>
+                                <input type="date" id="filterDate" class="input input-bordered w-full">
+                            </label>
+                            <button id="filterDateBtn" class="btn btn-primary w-full sm:w-auto">날짜 검색</button>
+                        </div>
+                    </div>
 
-            <div class="overflow-x-auto rounded-box border border-base-300">
-                <table id="myWorkoutsTable" class="table table-zebra table-pin-rows min-w-[860px]">
-                    <thead>
-                        <tr>
-                            <th>운동 번호</th>
-                            <th>운동 이름</th>
-                            <th>무게</th>
-                            <th>반복 횟수</th>
-                            <th>운동 부위</th>
-                            <th>운동 타겟</th>
-                            <th>운동 타입</th>
-                            <th>운동 날짜</th>
-                            <th>수정</th>
-                            <th>삭제</th>
-                        </tr>
-                    </thead>
-                    <tbody id="myWorkoutsList"></tbody>
-                </table>
+                    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+                        <table id="myWorkoutsTable" class="table table-zebra table-pin-rows min-w-[860px]">
+                            <thead>
+                                <tr>
+                                    <th>운동 번호</th>
+                                    <th>운동 이름</th>
+                                    <th>무게</th>
+                                    <th>반복 횟수</th>
+                                    <th>운동 부위</th>
+                                    <th>운동 타겟</th>
+                                    <th>운동 타입</th>
+                                    <th>운동 날짜</th>
+                                    <th>수정</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myWorkoutsList"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <footer class="app-modal-footer">
+                    <div class="flex justify-end">
+                        <button type="button" class="close btn btn-ghost w-full sm:w-auto">닫기</button>
+                    </div>
+                </footer>
             </div>
         </div>
     </div>
 
-    <div id="workoutModal" class="modal" role="dialog" aria-modal="true">
-        <div class="modal-box relative w-11/12 max-w-2xl border border-base-300 bg-base-100">
-            <button type="button" class="close btn btn-sm btn-circle btn-ghost absolute right-4 top-4" aria-label="닫기">x</button>
-            <h2 class="mb-4 text-xl font-semibold">운동 기록 작성</h2>
+    <div id="workoutModal" class="fixed inset-0 z-50 hidden app-modal" data-modal-overlay="true" aria-hidden="true">
+        <div class="app-modal-backdrop" data-modal-backdrop="true"></div>
+        <div class="app-modal-shell">
+            <div class="app-modal-panel sm:max-w-2xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="workoutModalTitle" aria-describedby="workoutModalDesc">
+                <div class="app-modal-handle"><span></span></div>
+                <header class="app-modal-header">
+                    <div>
+                        <h2 id="workoutModalTitle" class="text-lg font-bold sm:text-xl">운동 기록 작성</h2>
+                        <p id="workoutModalDesc" class="mt-1 text-sm text-base-content/70">운동 기록을 입력해 대시보드에 반영하세요.</p>
+                    </div>
+                    <button type="button" class="close btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                </header>
 
-            <form id="workoutForm" class="space-y-3">
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">운동 이름</span>
-                    <input type="text" id="work_name" name="work_name" placeholder="운동 이름을 입력하세요" required class="input input-bordered w-full">
-                </label>
+                <div class="app-modal-body">
+                    <form id="workoutForm" class="space-y-3">
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">운동 이름</span>
+                            <input type="text" id="work_name" name="work_name" placeholder="운동 이름을 입력하세요" required class="input input-bordered w-full">
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">무게 (kg)</span>
-                    <input type="number" id="work_weight" name="work_weight" placeholder="운동 무게를 입력하세요 (선택)" class="input input-bordered w-full">
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">무게 (kg)</span>
+                            <input type="number" id="work_weight" name="work_weight" placeholder="운동 무게를 입력하세요 (선택)" class="input input-bordered w-full">
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">반복 횟수</span>
-                    <input type="number" id="work_count" name="work_count" placeholder="반복 횟수를 입력하세요" required class="input input-bordered w-full">
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">반복 횟수</span>
+                            <input type="number" id="work_count" name="work_count" placeholder="반복 횟수를 입력하세요" required class="input input-bordered w-full">
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">운동 부위</span>
-                    <select id="work_part" name="work_part" required class="select select-bordered w-full">
-                        <option value="">선택해주세요</option>
-                        <option value="가슴">가슴</option>
-                        <option value="등">등</option>
-                        <option value="어깨">어깨</option>
-                        <option value="이두">이두</option>
-                        <option value="삼두">삼두</option>
-                        <option value="하체">하체</option>
-                        <option value="복근">복근</option>
-                        <option value="유산소">유산소</option>
-                    </select>
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">운동 부위</span>
+                            <select id="work_part" name="work_part" required class="select select-bordered w-full">
+                                <option value="">선택해주세요</option>
+                                <option value="가슴">가슴</option>
+                                <option value="등">등</option>
+                                <option value="어깨">어깨</option>
+                                <option value="이두">이두</option>
+                                <option value="삼두">삼두</option>
+                                <option value="하체">하체</option>
+                                <option value="복근">복근</option>
+                                <option value="유산소">유산소</option>
+                            </select>
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">운동 타겟</span>
-                    <select id="work_target" name="work_target" class="select select-bordered w-full">
-                        <option value="">선택해주세요</option>
-                    </select>
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">운동 타겟</span>
+                            <select id="work_target" name="work_target" class="select select-bordered w-full">
+                                <option value="">선택해주세요</option>
+                            </select>
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">운동 타입</span>
-                    <select id="work_type" name="work_type" class="select select-bordered w-full">
-                        <option value="">선택해주세요</option>
-                        <option value="프리웨이트">프리웨이트</option>
-                        <option value="머신">머신</option>
-                    </select>
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">운동 타입</span>
+                            <select id="work_type" name="work_type" class="select select-bordered w-full">
+                                <option value="">선택해주세요</option>
+                                <option value="프리웨이트">프리웨이트</option>
+                                <option value="머신">머신</option>
+                            </select>
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">운동 날짜</span>
-                    <input type="date" id="work_day" name="work_day" required class="input input-bordered w-full">
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">운동 날짜</span>
+                            <input type="date" id="work_day" name="work_day" required class="input input-bordered w-full">
+                        </label>
+                    </form>
+                </div>
 
-                <button type="button" id="submitWorkoutBtn" class="btn btn-primary mt-2 w-full">등록</button>
-            </form>
+                <footer class="app-modal-footer">
+                    <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                        <button type="button" class="close btn btn-ghost w-full sm:w-auto">취소</button>
+                        <button type="button" id="submitWorkoutBtn" class="btn btn-primary w-full sm:w-auto">등록</button>
+                    </div>
+                </footer>
+            </div>
         </div>
     </div>
 
     <script src="/javascripts/theme.js"></script>
+    <script src="/javascripts/modalManager.js"></script>
     <script src="/javascripts/work.js"></script>
 </body>
 </html>
-

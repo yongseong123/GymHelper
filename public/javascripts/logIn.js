@@ -24,7 +24,7 @@
 
     window.location.href = '/work';
   } catch (error) {
-    console.error("Error during login:", error);
     alert('로그인 중 오류가 발생했습니다.');
   }
 }
+

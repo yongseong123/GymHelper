@@ -19,7 +19,6 @@ exports.addWorkoutRecord = async (req, res) => {
     const result = await worksModel.addWorkoutRecord(workoutData);
     res.ok({ message: result.message });
   } catch (error) {
-    console.error("Add workout error:", error);
     res.fail("Failed to add workout record.", 500);
   }
 };
@@ -32,7 +31,6 @@ exports.getWorkoutsByDate = async (req, res) => {
     const workouts = await worksModel.getWorkoutsByDate(userId, date);
     res.ok({ workouts });
   } catch (error) {
-    console.error("Get workouts by date error:", error);
     res.fail("Failed to fetch workout records.", 500);
   }
 };
@@ -52,7 +50,6 @@ exports.updateWorkoutRecord = async (req, res) => {
     });
     res.ok({ message: result.message });
   } catch (error) {
-    console.error("Update workout error:", error);
     res.fail("Failed to update workout record.", 500);
   }
 };
@@ -65,7 +62,6 @@ exports.deleteWorkoutRecord = async (req, res) => {
     const result = await worksModel.deleteWorkoutRecord(work_num, work_day, work_id);
     res.ok({ message: result.message });
   } catch (error) {
-    console.error("Delete workout error:", error);
     res.fail("Failed to delete workout record.", 500);
   }
 };
@@ -77,7 +73,6 @@ exports.getAllWorkouts = async (req, res) => {
     const workouts = await worksModel.getAllWorkouts(userId);
     res.ok({ workouts });
   } catch (error) {
-    console.error("Get all workouts error:", error);
     res.fail("Failed to fetch workouts.", 500);
   }
 };
@@ -90,7 +85,6 @@ exports.getMonthlyWorkoutStats = async (req, res) => {
     const workoutStats = await worksModel.getMonthlyWorkoutStats(userId, year, month);
     res.ok({ workoutStats });
   } catch (error) {
-    console.error("Get monthly workout stats error:", error);
     res.fail("Failed to fetch monthly workout stats.", 500);
   }
 };
@@ -110,7 +104,6 @@ exports.getPartStats = async (req, res) => {
     const stats = await worksModel.getPartStats(userId, part, resolvedYear, resolvedMonth);
     res.ok({ stats });
   } catch (error) {
-    console.error("Get part stats error:", error);
     res.fail("Failed to fetch part stats.", 500);
   }
 };

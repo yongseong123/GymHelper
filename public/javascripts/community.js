@@ -1,12 +1,28 @@
 ﻿const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
-const showModal = (modal) => {
-  if (modal) modal.classList.add("modal-open");
+const openAppModal = (modal, triggerEl = null) => {
+  if (!modal) return;
+
+  if (window.ModalManager) {
+    window.ModalManager.open(modal, { triggerEl });
+    return;
+  }
+
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
 };
 
-const hideModal = (modal) => {
-  if (modal) modal.classList.remove("modal-open");
+const closeAppModal = (modal, options = {}) => {
+  if (!modal) return;
+
+  if (window.ModalManager) {
+    window.ModalManager.close(modal, options);
+    return;
+  }
+
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden", "true");
 };
 
 const formatDateTime = (dateTime) => {
@@ -32,25 +48,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const deletePostBtn = $("#deletePostBtn");
   const saveEditPostBtn = $("#saveEditPostBtn");
 
+  if (window.ModalManager) {
+    window.ModalManager.register(postModal, {
+      panelSelector: "[data-modal-panel]",
+      closeSelectors: [".close"],
+      initialFocusSelector: "#postTitle"
+    });
+
+    window.ModalManager.register(viewPostModal, {
+      panelSelector: "[data-modal-panel]",
+      closeSelectors: [".close-view"],
+      initialFocusSelector: "#commentContent"
+    });
+
+    window.ModalManager.register(editPostModal, {
+      panelSelector: "[data-modal-panel]",
+      closeSelectors: [".close-edit"],
+      initialFocusSelector: "#editPostTitle"
+    });
+  }
+
   let currentPostId = null;
 
-  const closeButtons = [
-    { btn: $(".close"), modal: postModal },
-    { btn: $(".close-view"), modal: viewPostModal },
-    { btn: $(".close-edit"), modal: editPostModal }
-  ];
-
-  closeButtons.forEach(({ btn, modal }) => {
-    btn?.addEventListener("click", () => hideModal(modal));
+  writePostBtn?.addEventListener("click", () => {
+    openAppModal(postModal, writePostBtn);
   });
-
-  window.addEventListener("click", (event) => {
-    if (event.target === postModal) hideModal(postModal);
-    if (event.target === viewPostModal) hideModal(viewPostModal);
-    if (event.target === editPostModal) hideModal(editPostModal);
-  });
-
-  writePostBtn?.addEventListener("click", () => showModal(postModal));
 
   submitPostBtn?.addEventListener("click", async () => {
     const postTitle = $("#postTitle").value.trim();
@@ -76,15 +98,32 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("게시글 등록이 실패했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("Error:", error);
     }
   });
+
+  const deleteComment = async (replyId) => {
+    if (!confirm("정말로 댓글을 삭제하시겠습니까?")) return;
+
+    try {
+      const response = await fetch(`/community/deleteComment/${replyId}`, {
+        method: "DELETE"
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("댓글이 성공적으로 삭제되었습니다.");
+        location.reload();
+      } else {
+        alert("댓글 삭제가 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+    }
+  };
 
   const renderComments = (comments = []) => {
     if (!commentList) return;
     commentList.innerHTML = "";
 
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       const commentItem = document.createElement("div");
       commentItem.className = "comment-item grid grid-cols-[1fr_auto] gap-3 rounded-box border border-base-300 bg-base-100 p-3";
       commentItem.innerHTML = `
@@ -97,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       commentList.appendChild(commentItem);
 
-      commentItem.querySelector(".comment-delete-btn").addEventListener("click", () => {
+      commentItem.querySelector(".comment-delete-btn")?.addEventListener("click", () => {
         deleteComment(comment.reply_id);
       });
     });
@@ -126,13 +165,12 @@ document.addEventListener("DOMContentLoaded", () => {
         renderComments(data.comments);
       }
     } catch (error) {
-      console.error("Error:", error);
     }
 
-    showModal(viewPostModal);
+    openAppModal(viewPostModal, item);
   };
 
-  $$(".post-item").forEach(item => {
+  $$(".post-item").forEach((item) => {
     item.addEventListener("click", () => openPost(item));
   });
 
@@ -159,28 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("댓글 등록이 실패했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("Error:", error);
     }
   });
-
-  const deleteComment = async (replyId) => {
-    if (!confirm("정말로 댓글을 삭제하시겠습니까?")) return;
-
-    try {
-      const response = await fetch(`/community/deleteComment/${replyId}`, {
-        method: "DELETE"
-      });
-      const data = await response.json();
-      if (data.success) {
-        alert("댓글이 성공적으로 삭제되었습니다.");
-        location.reload();
-      } else {
-        alert("댓글 삭제가 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   editPostBtn?.addEventListener("click", () => {
     const currentTitle = $("#viewPostTitle").innerText;
@@ -189,8 +207,11 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#editPostTitle").value = currentTitle;
     $("#editPostContent").value = currentContent;
 
-    hideModal(viewPostModal);
-    showModal(editPostModal);
+    closeAppModal(viewPostModal, { restoreFocus: false });
+
+    window.setTimeout(() => {
+      openAppModal(editPostModal, editPostBtn);
+    }, 80);
   });
 
   deletePostBtn?.addEventListener("click", async () => {
@@ -208,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("게시글 삭제가 실패했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("Error:", error);
     }
   });
 
@@ -235,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("게시글 수정이 실패했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("Error:", error);
     }
   });
 });
+

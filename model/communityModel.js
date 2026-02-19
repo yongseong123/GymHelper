@@ -6,7 +6,6 @@ exports.getAllPosts = async () => {
     const result = await pool.request().query('SELECT * FROM board ORDER BY regdate DESC');
     return result.recordset;
   } catch (error) {
-    console.error("Get posts error:", error);
     throw error;
   }
 };
@@ -24,7 +23,6 @@ exports.createPost = async ({ writer, title, content }) => {
       .input('content', content)
       .query(insertQuery);
   } catch (error) {
-    console.error("Create post error:", error);
     throw error;
   }
 };
@@ -43,7 +41,6 @@ exports.updatePost = async (postId, { title, content }) => {
       .input('postId', postId)
       .query(updateQuery);
   } catch (error) {
-    console.error("Update post error:", error);
     throw error;
   }
 };
@@ -59,7 +56,6 @@ exports.deletePost = async (postId) => {
       .input('postId', postId)
       .query(deleteQuery);
   } catch (error) {
-    console.error("Delete post error:", error);
     throw error;
   }
 };
@@ -73,7 +69,6 @@ exports.getPostById = async (postId) => {
       .query(query);
     return result.recordset[0];
   } catch (error) {
-    console.error("Get post error:", error);
     throw error;
   }
 };
@@ -87,7 +82,6 @@ exports.getCommentsByPostId = async (postId) => {
       .query(query);
     return result.recordset;
   } catch (error) {
-    console.error("Get comments error:", error);
     throw error;
   }
 };
@@ -105,7 +99,6 @@ exports.createComment = async ({ board_id, writer, content }) => {
       .input('content', content)
       .query(query);
   } catch (error) {
-    console.error("Create comment error:", error);
     throw error;
   }
 };
@@ -118,7 +111,6 @@ exports.deleteComment = async (replyId) => {
       .input('replyId', replyId)
       .query(query);
   } catch (error) {
-    console.error("Delete comment error:", error);
     throw error;
   }
 };

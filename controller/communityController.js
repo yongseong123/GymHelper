@@ -5,7 +5,6 @@ exports.getCommunityPage = async (req, res) => {
     const posts = await communityModel.getAllPosts();
     res.render('community', { posts });
   } catch (error) {
-    console.error("Community page load error:", error);
     res.status(500).send("Server error");
   }
 };
@@ -24,7 +23,6 @@ exports.createPost = async (req, res) => {
     await communityModel.createPost({ writer, title: trimmedTitle, content: trimmedContent });
     res.ok();
   } catch (error) {
-    console.error("Create post error:", error);
     res.fail("Failed to create post.", 500);
   }
 };
@@ -43,7 +41,6 @@ exports.editPost = async (req, res) => {
     await communityModel.updatePost(postId, { title: trimmedTitle, content: trimmedContent });
     res.ok();
   } catch (error) {
-    console.error("Edit post error:", error);
     res.fail("Failed to update post.", 500);
   }
 };
@@ -55,7 +52,6 @@ exports.deletePost = async (req, res) => {
     await communityModel.deletePost(postId);
     res.ok();
   } catch (error) {
-    console.error("Delete post error:", error);
     res.fail("Failed to delete post.", 500);
   }
 };
@@ -68,7 +64,6 @@ exports.getPostAndComments = async (req, res) => {
     const comments = await communityModel.getCommentsByPostId(postId);
     res.ok({ post, comments });
   } catch (error) {
-    console.error("Get post/comments error:", error);
     res.fail("Failed to fetch post and comments.", 500);
   }
 };
@@ -86,7 +81,6 @@ exports.addComment = async (req, res) => {
     await communityModel.createComment({ board_id, writer, content: trimmedContent });
     res.ok();
   } catch (error) {
-    console.error("Add comment error:", error);
     res.fail("Failed to add comment.", 500);
   }
 };
@@ -98,7 +92,6 @@ exports.deleteComment = async (req, res) => {
     await communityModel.deleteComment(replyId);
     res.ok();
   } catch (error) {
-    console.error("Delete comment error:", error);
     res.fail("Failed to delete comment.", 500);
   }
 };

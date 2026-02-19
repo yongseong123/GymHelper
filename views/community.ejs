@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="gym-light">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 <body class="app-shell-bg">
-    <div class="drawer min-h-screen lg:drawer-open">
+    <div class="drawer min-h-screen lg:drawer-open" data-app-shell>
         <input id="app-shell-drawer-community" type="checkbox" class="drawer-toggle">
 
         <div class="drawer-content flex min-h-screen flex-col">
@@ -114,84 +114,138 @@
         </div>
     </div>
 
-    <div id="postModal" class="modal" role="dialog" aria-modal="true">
-        <div class="modal-box relative w-11/12 max-w-2xl border border-base-300 bg-base-100">
-            <button type="button" class="close btn btn-sm btn-circle btn-ghost absolute right-4 top-4" aria-label="닫기">x</button>
-            <h2 class="mb-4 text-xl font-semibold">게시글 작성</h2>
+    <div id="postModal" class="fixed inset-0 z-50 hidden app-modal" data-modal-overlay="true" aria-hidden="true">
+        <div class="app-modal-backdrop" data-modal-backdrop="true"></div>
+        <div class="app-modal-shell">
+            <div class="app-modal-panel sm:max-w-2xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="postModalTitle" aria-describedby="postModalDesc">
+                <div class="app-modal-handle"><span></span></div>
+                <header class="app-modal-header">
+                    <div>
+                        <h2 id="postModalTitle" class="text-lg font-bold sm:text-xl">게시글 작성</h2>
+                        <p id="postModalDesc" class="mt-1 text-sm text-base-content/70">운동 기록과 질문을 간단히 공유해보세요.</p>
+                    </div>
+                    <button type="button" class="close btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                </header>
 
-            <form id="postForm" class="space-y-3">
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">제목</span>
-                    <input type="text" id="postTitle" name="title" required class="input input-bordered w-full">
-                </label>
+                <div class="app-modal-body">
+                    <form id="postForm" class="space-y-3">
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">제목</span>
+                            <input type="text" id="postTitle" name="title" required class="input input-bordered w-full">
+                        </label>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">내용</span>
-                    <textarea id="postContent" name="content" rows="6" required class="textarea textarea-bordered w-full"></textarea>
-                </label>
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">내용</span>
+                            <textarea id="postContent" name="content" rows="8" required class="textarea textarea-bordered w-full"></textarea>
+                        </label>
+                    </form>
+                </div>
 
-                <button type="button" id="submitPostBtn" class="btn btn-primary w-full">등록</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="viewPostModal" class="modal" role="dialog" aria-modal="true">
-        <div class="modal-box relative w-11/12 max-w-3xl border border-base-300 bg-base-100">
-            <button type="button" class="close-view btn btn-sm btn-circle btn-ghost absolute right-4 top-4" aria-label="닫기">x</button>
-            <h2 id="viewPostTitle" class="mb-2 pr-8 text-2xl font-bold">제목</h2>
-            <p id="viewPostContent" class="rounded-box border border-base-300 bg-base-200/60 p-4 text-sm leading-6">내용</p>
-            <div class="mt-3 text-xs text-base-content/70">
-                <span id="viewPostDate">작성일</span>
-                <span class="mx-1">|</span>
-                <span id="viewPostWriter">작성자</span>
-            </div>
-
-            <section class="mt-5 rounded-box border border-base-300 bg-base-200/55 p-4">
-                <h3 class="mb-3 text-sm font-semibold">댓글</h3>
-                <div id="commentList" class="space-y-2"></div>
-            </section>
-
-            <section class="mt-4">
-                <h3 class="mb-2 text-sm font-semibold">댓글 작성</h3>
-                <form id="commentForm" class="space-y-3">
-                    <label class="form-control w-full">
-                        <span class="label-text pb-1 text-sm">내용</span>
-                        <textarea id="commentContent" name="commentContent" rows="3" required class="textarea textarea-bordered w-full"></textarea>
-                    </label>
-                    <button type="button" id="submitCommentBtn" class="btn btn-secondary w-full">댓글 작성</button>
-                </form>
-            </section>
-
-            <div class="mt-4 flex flex-wrap gap-2">
-                <button type="button" id="editPostBtn" class="btn btn-accent">수정</button>
-                <button type="button" id="deletePostBtn" class="btn btn-error">삭제</button>
+                <footer class="app-modal-footer">
+                    <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                        <button type="button" class="close btn btn-ghost w-full sm:w-auto">취소</button>
+                        <button type="button" id="submitPostBtn" class="btn btn-primary w-full sm:w-auto">등록</button>
+                    </div>
+                </footer>
             </div>
         </div>
     </div>
 
-    <div id="editPostModal" class="modal" role="dialog" aria-modal="true">
-        <div class="modal-box relative w-11/12 max-w-2xl border border-base-300 bg-base-100">
-            <button type="button" class="close-edit btn btn-sm btn-circle btn-ghost absolute right-4 top-4" aria-label="닫기">x</button>
-            <h2 class="mb-4 text-xl font-semibold">게시글 수정</h2>
+    <div id="viewPostModal" class="fixed inset-0 z-50 hidden app-modal" data-modal-overlay="true" aria-hidden="true">
+        <div class="app-modal-backdrop" data-modal-backdrop="true"></div>
+        <div class="app-modal-shell">
+            <div class="app-modal-panel sm:max-w-4xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="viewPostTitle" aria-describedby="viewPostDesc">
+                <div class="app-modal-handle"><span></span></div>
+                <header class="app-modal-header">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-base-content/60">Post Detail</p>
+                        <p id="viewPostDesc" class="mt-1 text-sm text-base-content/70">게시글과 댓글을 확인하고 필요한 작업을 수행하세요.</p>
+                    </div>
+                    <button type="button" class="close-view btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                </header>
 
-            <form id="editPostForm" class="space-y-3">
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">제목</span>
-                    <input type="text" id="editPostTitle" name="title" required class="input input-bordered w-full">
-                </label>
+                <div class="app-modal-body space-y-4">
+                    <section class="space-y-3">
+                        <h2 id="viewPostTitle" class="text-2xl font-bold">제목</h2>
+                        <p id="viewPostContent" class="rounded-box border border-base-300 bg-base-200/60 p-4 text-sm leading-6">내용</p>
+                        <div class="text-xs text-base-content/70">
+                            <span id="viewPostDate">작성일</span>
+                            <span class="mx-1">|</span>
+                            <span id="viewPostWriter">작성자</span>
+                        </div>
+                    </section>
 
-                <label class="form-control w-full">
-                    <span class="label-text pb-1 text-sm">내용</span>
-                    <textarea id="editPostContent" name="content" rows="6" required class="textarea textarea-bordered w-full"></textarea>
-                </label>
+                    <section class="rounded-box border border-base-300 bg-base-200/55 p-4">
+                        <h3 class="mb-3 text-sm font-semibold">댓글</h3>
+                        <div id="commentList" class="space-y-2"></div>
+                    </section>
 
-                <button type="button" id="saveEditPostBtn" class="btn btn-primary w-full">저장</button>
-            </form>
+                    <section>
+                        <h3 class="mb-2 text-sm font-semibold">댓글 작성</h3>
+                        <form id="commentForm" class="space-y-3">
+                            <label class="form-control w-full">
+                                <span class="label-text pb-1 text-sm">내용</span>
+                                <textarea id="commentContent" name="commentContent" rows="3" required class="textarea textarea-bordered w-full"></textarea>
+                            </label>
+                            <div class="flex justify-end">
+                                <button type="button" id="submitCommentBtn" class="btn btn-secondary w-full sm:w-auto">댓글 작성</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+
+                <footer class="app-modal-footer">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <button type="button" id="deletePostBtn" class="btn btn-error btn-outline w-full sm:w-auto">삭제</button>
+                        <div class="flex flex-col-reverse gap-2 sm:flex-row">
+                            <button type="button" class="close-view btn btn-ghost w-full sm:w-auto">닫기</button>
+                            <button type="button" id="editPostBtn" class="btn btn-primary w-full sm:w-auto">수정</button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <div id="editPostModal" class="fixed inset-0 z-50 hidden app-modal" data-modal-overlay="true" aria-hidden="true">
+        <div class="app-modal-backdrop" data-modal-backdrop="true"></div>
+        <div class="app-modal-shell">
+            <div class="app-modal-panel sm:max-w-2xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="editPostModalTitle" aria-describedby="editPostModalDesc">
+                <div class="app-modal-handle"><span></span></div>
+                <header class="app-modal-header">
+                    <div>
+                        <h2 id="editPostModalTitle" class="text-lg font-bold sm:text-xl">게시글 수정</h2>
+                        <p id="editPostModalDesc" class="mt-1 text-sm text-base-content/70">제목과 내용을 수정한 뒤 저장하세요.</p>
+                    </div>
+                    <button type="button" class="close-edit btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                </header>
+
+                <div class="app-modal-body">
+                    <form id="editPostForm" class="space-y-3">
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">제목</span>
+                            <input type="text" id="editPostTitle" name="title" required class="input input-bordered w-full">
+                        </label>
+
+                        <label class="form-control w-full">
+                            <span class="label-text pb-1 text-sm">내용</span>
+                            <textarea id="editPostContent" name="content" rows="8" required class="textarea textarea-bordered w-full"></textarea>
+                        </label>
+                    </form>
+                </div>
+
+                <footer class="app-modal-footer">
+                    <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                        <button type="button" class="close-edit btn btn-ghost w-full sm:w-auto">취소</button>
+                        <button type="button" id="saveEditPostBtn" class="btn btn-primary w-full sm:w-auto">저장</button>
+                    </div>
+                </footer>
+            </div>
         </div>
     </div>
 
     <script src="/javascripts/theme.js"></script>
+    <script src="/javascripts/modalManager.js"></script>
     <script src="/javascripts/community.js"></script>
 </body>
 </html>
-

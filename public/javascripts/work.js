@@ -8,16 +8,6 @@ const formatDate = (dateStr) => {
   return `${year}-${month}-${day}`;
 };
 
-const openModal = (modal) => {
-  if (!modal) return;
-  modal.classList.add("modal-open");
-};
-
-const closeModal = (modal) => {
-  if (!modal) return;
-  modal.classList.remove("modal-open");
-};
-
 document.addEventListener("DOMContentLoaded", () => {
   initLogout();
   initCharts();
@@ -43,7 +33,6 @@ function initLogout() {
         alert('로그아웃에 실패했습니다.');
       }
     } catch (error) {
-      console.error("Logout Error: ", error);
       alert('로그아웃 중 오류가 발생했습니다.');
     }
   });
@@ -108,15 +97,14 @@ function initCharts() {
       });
 
       if (!response.ok) {
-        console.error("월간 운동 통계 조회 실패:", response.statusText);
         return;
       }
 
       const data = await response.json();
       if (!data.success || !Array.isArray(data.workoutStats)) return;
 
-      const workoutCounts = labels.map(label => {
-        const stat = data.workoutStats.find(stat => stat.work_part === label);
+      const workoutCounts = labels.map((label) => {
+        const stat = data.workoutStats.find((item) => item.work_part === label);
         return stat ? stat.count : 0;
       });
 
@@ -156,7 +144,6 @@ function initCharts() {
         }
       });
     } catch (error) {
-      console.error("월간 운동 통계 로드 오류:", error);
     }
   };
 
@@ -173,7 +160,6 @@ function initCharts() {
       });
 
       if (!response.ok) {
-        console.error("부위별 통계 조회 실패:", response.statusText);
         return;
       }
 
@@ -181,8 +167,8 @@ function initCharts() {
       if (!data.success || !Array.isArray(data.stats)) return;
 
       const targetLabels = partTargets[part] || [];
-      const workoutCounts = targetLabels.map(target => {
-        const stat = data.stats.find(stat => stat.work_target === target);
+      const workoutCounts = targetLabels.map((target) => {
+        const stat = data.stats.find((item) => item.work_target === target);
         return stat ? stat.count : 0;
       });
 
@@ -217,17 +203,16 @@ function initCharts() {
         }
       });
     } catch (error) {
-      console.error("부위별 통계 로드 오류:", error);
     }
   };
 
   if (yearSelector) {
     const startYear = initialYear - 3;
     const endYear = initialYear + 1;
-    for (let y = startYear; y <= endYear; y += 1) {
+    for (let year = startYear; year <= endYear; year += 1) {
       const option = document.createElement('option');
-      option.value = String(y);
-      option.textContent = String(y);
+      option.value = String(year);
+      option.textContent = String(year);
       yearSelector.appendChild(option);
     }
     yearSelector.value = String(initialYear);
@@ -309,21 +294,19 @@ function initCalendar() {
       });
 
       if (!response.ok) {
-        console.error("전체 운동 기록 조회 실패:", response.statusText);
         return [];
       }
 
       const data = await response.json();
       if (!data.success || !Array.isArray(data.workouts)) return [];
 
-      const uniqueDates = new Set(data.workouts.map(workout => workout.work_day));
+      const uniqueDates = new Set(data.workouts.map((workout) => workout.work_day));
       return Array.from(uniqueDates).map((date) => ({
         title: "운동 기록",
         start: date,
         color: 'blue'
       }));
     } catch (error) {
-      console.error("전체 운동 기록 로드 오류:", error);
       return [];
     }
   };
@@ -340,7 +323,7 @@ function initCalendar() {
       editable: true,
       displayEventTime: false,
       events: calendarEvents,
-      eventMouseEnter: function(info) {
+      eventMouseEnter(info) {
         info.el.style.cursor = 'pointer';
       }
     });
@@ -354,12 +337,37 @@ function initWorkouts() {
   const myWorkoutsBtn = $("myWorkoutsBtn");
   const workoutModal = $("workoutModal");
   const myWorkoutsModal = $("myWorkoutsModal");
-  const closeButtons = document.querySelectorAll(".close");
   const submitWorkoutBtn = $("submitWorkoutBtn");
   const filterDateBtn = $("filterDateBtn");
   const myWorkoutsList = $("myWorkoutsList");
+  const workoutModalTitle = $("workoutModalTitle");
+  const workoutModalDesc = $("workoutModalDesc");
 
   if (!workoutModal || !myWorkoutsModal || !submitWorkoutBtn || !myWorkoutsList) return;
+
+  const openAppModal = (modal, triggerEl = null) => {
+    if (!modal) return;
+
+    if (window.ModalManager) {
+      window.ModalManager.open(modal, { triggerEl });
+      return;
+    }
+
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+  };
+
+  const closeAppModal = (modal, options = {}) => {
+    if (!modal) return;
+
+    if (window.ModalManager) {
+      window.ModalManager.close(modal, options);
+      return;
+    }
+
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+  };
 
   const workPartSelect = $("work_part");
   const workTargetSelect = $("work_target");
@@ -390,13 +398,12 @@ function initWorkouts() {
 
       if (response.ok) {
         alert('운동 기록이 성공적으로 추가되었습니다.');
-        closeModal(workoutModal);
+        closeAppModal(workoutModal);
         location.reload();
       } else {
         alert('운동 기록 추가가 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.error("Error:", error);
     }
   };
 
@@ -420,13 +427,12 @@ function initWorkouts() {
 
       if (response.ok) {
         alert('운동 기록이 성공적으로 수정되었습니다.');
-        closeModal(workoutModal);
+        closeAppModal(workoutModal);
         location.reload();
       } else {
         alert('운동 기록 수정이 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.error("Error:", error);
     }
   };
 
@@ -450,24 +456,7 @@ function initWorkouts() {
         alert('운동 기록 삭제가 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.error("운동 기록 삭제 오류:", error);
     }
-  };
-
-  const openEditModal = (workout) => {
-    openModal(workoutModal);
-    $("work_name").value = workout.work_name;
-    $("work_weight").value = workout.work_weight;
-    $("work_count").value = workout.work_count;
-    $("work_part").value = workout.work_part;
-    $("work_target").value = workout.work_target || "";
-    $("work_type").value = workout.work_type || "";
-    $("work_day").value = workout.work_day;
-
-    submitWorkoutBtn.textContent = "수정";
-    submitWorkoutBtn.classList.remove('btn-primary');
-    submitWorkoutBtn.classList.add('btn-success');
-    submitWorkoutBtn.onclick = () => updateWorkout(workout);
   };
 
   const resetSubmitButton = () => {
@@ -475,6 +464,47 @@ function initWorkouts() {
     submitWorkoutBtn.classList.remove('btn-success');
     submitWorkoutBtn.classList.add('btn-primary');
     submitWorkoutBtn.onclick = addWorkoutHandler;
+
+    if (workoutModalTitle) {
+      workoutModalTitle.textContent = "운동 기록 작성";
+    }
+    if (workoutModalDesc) {
+      workoutModalDesc.textContent = "운동 기록을 입력해 대시보드에 반영하세요.";
+    }
+  };
+
+  const openEditModal = (workout, triggerEl) => {
+    const openEditor = () => {
+      $("work_name").value = workout.work_name;
+      $("work_weight").value = workout.work_weight;
+      $("work_count").value = workout.work_count;
+      $("work_part").value = workout.work_part;
+      $("work_target").value = workout.work_target || "";
+      $("work_type").value = workout.work_type || "";
+      $("work_day").value = workout.work_day;
+
+      submitWorkoutBtn.textContent = "수정";
+      submitWorkoutBtn.classList.remove('btn-primary');
+      submitWorkoutBtn.classList.add('btn-success');
+      submitWorkoutBtn.onclick = () => updateWorkout(workout);
+
+      if (workoutModalTitle) {
+        workoutModalTitle.textContent = "운동 기록 수정";
+      }
+      if (workoutModalDesc) {
+        workoutModalDesc.textContent = "선택한 운동 기록을 수정한 뒤 저장하세요.";
+      }
+
+      openAppModal(workoutModal, triggerEl || document.activeElement);
+    };
+
+    if (window.ModalManager?.isOpen(myWorkoutsModal)) {
+      closeAppModal(myWorkoutsModal, { restoreFocus: false });
+      window.setTimeout(openEditor, 80);
+      return;
+    }
+
+    openEditor();
   };
 
   const loadMyWorkouts = async (date = null) => {
@@ -490,7 +520,7 @@ function initWorkouts() {
       const data = await response.json();
       if (!data.success) return;
 
-      data.workouts.forEach(workout => {
+      data.workouts.forEach((workout) => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${workout.work_num}</td>
@@ -505,12 +535,12 @@ function initWorkouts() {
           <td><button class="delete-btn btn btn-xs btn-error">삭제</button></td>
         `;
 
-        row.querySelector(".edit-btn").addEventListener("click", () => openEditModal(workout));
-        row.querySelector(".delete-btn").addEventListener("click", () => deleteWorkout(workout));
+        const editBtn = row.querySelector(".edit-btn");
+        editBtn?.addEventListener("click", (event) => openEditModal(workout, event.currentTarget));
+        row.querySelector(".delete-btn")?.addEventListener("click", () => deleteWorkout(workout));
         myWorkoutsList.appendChild(row);
       });
     } catch (error) {
-      console.error("운동 기록 로드 오류:", error);
     }
   };
 
@@ -534,7 +564,7 @@ function initWorkouts() {
         break;
     }
 
-    options.forEach(option => {
+    options.forEach((option) => {
       const optElement = document.createElement("option");
       optElement.value = option;
       optElement.textContent = option;
@@ -542,32 +572,31 @@ function initWorkouts() {
     });
   });
 
+  if (window.ModalManager) {
+    window.ModalManager.register(workoutModal, {
+      panelSelector: "[data-modal-panel]",
+      closeSelectors: [".close"],
+      initialFocusSelector: "#work_name",
+      onClose: () => {
+        resetSubmitButton();
+      }
+    });
+
+    window.ModalManager.register(myWorkoutsModal, {
+      panelSelector: "[data-modal-panel]",
+      closeSelectors: [".close"],
+      initialFocusSelector: "#filterDate"
+    });
+  }
+
   addWorkoutBtn?.addEventListener("click", () => {
     resetSubmitButton();
-    openModal(workoutModal);
+    openAppModal(workoutModal, addWorkoutBtn);
   });
 
   myWorkoutsBtn?.addEventListener("click", async () => {
-    openModal(myWorkoutsModal);
+    openAppModal(myWorkoutsModal, myWorkoutsBtn);
     await loadMyWorkouts();
-  });
-
-  closeButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      closeModal(workoutModal);
-      closeModal(myWorkoutsModal);
-      resetSubmitButton();
-    });
-  });
-
-  window.addEventListener("click", (event) => {
-    if (event.target === workoutModal) {
-      closeModal(workoutModal);
-      resetSubmitButton();
-    }
-    if (event.target === myWorkoutsModal) {
-      closeModal(myWorkoutsModal);
-    }
   });
 
   resetSubmitButton();
@@ -579,3 +608,4 @@ function initWorkouts() {
     }
   });
 }
+

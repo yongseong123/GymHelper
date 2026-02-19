@@ -92,6 +92,27 @@
     outline: 2px solid color-mix(in oklab, var(--color-primary) 80%, white);
     outline-offset: 2px;
   }
+
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible,
+  select:focus,
+  select:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .input:focus,
+  .input:focus-visible,
+  .textarea:focus,
+  .textarea:focus-visible,
+  .select:focus,
+  .select:focus-visible {
+    outline: none !important;
+    border-color: color-mix(in oklab, var(--color-primary) 72%, var(--color-base-content)) !important;
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 72%, var(--color-base-content)) !important;
+  }
 }
 
 @layer components {
@@ -127,6 +148,55 @@
 
   .kpi-stat {
     @apply stat bg-base-100 border border-base-300 rounded-box;
+  }
+
+  .app-modal {
+    @apply fixed inset-0 z-50 overflow-hidden;
+  }
+
+  .app-modal-shell {
+    @apply relative flex h-full w-full items-end justify-center p-0 pointer-events-none sm:items-center sm:p-6;
+  }
+
+  .app-modal-backdrop {
+    @apply pointer-events-none absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none;
+  }
+
+  .app-modal-panel {
+    @apply relative pointer-events-auto flex w-full max-h-[85vh] flex-col overflow-hidden rounded-t-3xl border border-base-300 bg-base-100/95 shadow-2xl opacity-0 transition duration-200 ease-out sm:max-h-[80vh] sm:rounded-3xl motion-reduce:transition-none motion-reduce:transform-none;
+    transform: translate3d(0, 1rem, 0) scale(1);
+  }
+
+  .app-modal-handle {
+    @apply pt-2 sm:hidden;
+  }
+
+  .app-modal-handle > span {
+    @apply mx-auto block h-1 w-12 rounded-full bg-base-content/20;
+  }
+
+  .app-modal-header {
+    @apply flex items-start justify-between gap-3 border-b border-base-300 px-4 py-4 sm:px-6;
+  }
+
+  .app-modal-body {
+    @apply min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6;
+  }
+
+  .app-modal-footer {
+    @apply border-t border-base-300 bg-base-100/90 px-4 py-3 backdrop-blur sm:px-6;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+
+  .app-modal[data-modal-state="opening"] .app-modal-backdrop,
+  .app-modal[data-modal-state="open"] .app-modal-backdrop {
+    @apply opacity-100;
+  }
+
+  .app-modal[data-modal-state="opening"] .app-modal-panel,
+  .app-modal[data-modal-state="open"] .app-modal-panel {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -192,6 +262,23 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .app-modal-panel {
+    transform: translate3d(0, 0.45rem, 0) scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-modal-backdrop,
+  .app-modal-panel {
+    transition: none !important;
+  }
+
+  .app-modal-panel {
+    transform: none !important;
   }
 }
 

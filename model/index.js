@@ -20,12 +20,6 @@ const config = {
   },
 };
 
-const poolPromise = sql
-  .connect(config)
-  .then((pool) => {
-    console.log("Successfully connected to MSSQL!");
-    return pool;
-  })
-  .catch((err) => console.log("Database Connection Failed: ", err));
+const poolPromise = sql.connect(config);
 
 module.exports = { poolPromise };

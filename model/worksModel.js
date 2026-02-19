@@ -40,7 +40,6 @@ exports.addWorkoutRecord = async (workoutData) => {
 
     return { success: true, message: "Workout record created." };
   } catch (error) {
-    console.error("Add workout record error:", error);
     throw error;
   }
 };
@@ -58,7 +57,6 @@ exports.getWorkoutsByDate = async (userId, date) => {
 
     return result.recordset;
   } catch (error) {
-    console.error("Get workouts by date error:", error);
     throw error;
   }
 };
@@ -89,7 +87,6 @@ exports.updateWorkoutRecord = async (work_num, work_day, work_id, updateData) =>
 
     return { success: true, message: "Workout record updated." };
   } catch (error) {
-    console.error("Update workout record error:", error);
     throw error;
   }
 };
@@ -111,7 +108,6 @@ exports.deleteWorkoutRecord = async (work_num, work_day, work_id) => {
 
     return { success: true, message: "Workout record deleted." };
   } catch (error) {
-    console.error("Delete workout record error:", error);
     throw error;
   }
 };
@@ -130,7 +126,6 @@ exports.getAllWorkouts = async (userId) => {
 
     return result.recordset;
   } catch (error) {
-    console.error("Get all workouts error:", error);
     throw error;
   }
 };
@@ -152,7 +147,6 @@ exports.getMonthlyWorkoutStats = async (userId, year, month) => {
 
     return result.recordset;
   } catch (error) {
-    console.error("Get monthly workout stats error:", error);
     throw error;
   }
 };
@@ -178,7 +172,6 @@ exports.getPartStats = async (userId, part, year, month) => {
 
     return result.recordset;
   } catch (error) {
-    console.error("Get part stats error:", error);
     throw error;
   }
 };
