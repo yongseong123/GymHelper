@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+    "build:css": "tailwindcss -i ./src/styles/app.css -o ./public/stylesheets/app.css --minify",
+    "watch:css": "tailwindcss -i ./src/styles/app.css -o ./public/stylesheets/app.css --watch",
+    "dev": "concurrently \"nodemon app.js\" \"npm run watch:css\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -25,5 +28,11 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "uid2": "^1.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "concurrently": "^9.1.2",
+    "daisyui": "^5.0.0",
+    "tailwindcss": "^4.1.13"
   }
 }

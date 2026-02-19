@@ -8,6 +8,16 @@ const formatDate = (dateStr) => {
   return `${year}-${month}-${day}`;
 };
 
+const openModal = (modal) => {
+  if (!modal) return;
+  modal.classList.add("modal-open");
+};
+
+const closeModal = (modal) => {
+  if (!modal) return;
+  modal.classList.remove("modal-open");
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   initLogout();
   initCharts();
@@ -57,6 +67,15 @@ function initCharts() {
     "어깨": ["전면", "측면", "후면"],
     "하체": ["대퇴", "둔부"]
   };
+  const cssVar = (name, fallback) => {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return value || fallback;
+  };
+  const chartColors = () => ({
+    primary: cssVar('--color-primary', '#f97316'),
+    secondary: cssVar('--color-secondary', '#84cc16'),
+    accent: cssVar('--color-accent', '#06b6d4')
+  });
 
   let topChart;
   let bottomChart;
@@ -65,6 +84,7 @@ function initCharts() {
   const today = new Date();
   const initialYear = today.getFullYear();
   const initialMonth = today.getMonth() + 1;
+  monthSelector.value = String(initialMonth);
 
   const getSelectedYearMonth = () => {
     const selectedYear = yearSelector ? Number(yearSelector.value) || initialYear : initialYear;
@@ -114,8 +134,8 @@ function initCharts() {
           datasets: [{
             label: '운동 횟수',
             data: workoutCounts,
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: chartColors().primary,
+            borderColor: chartColors().secondary,
             borderWidth: 1
           }]
         },
@@ -180,8 +200,8 @@ function initCharts() {
           datasets: [{
             label: '타겟별 운동 통계',
             data: workoutCounts,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: chartColors().accent,
+            borderColor: chartColors().accent,
             borderWidth: 1,
             fill: false
           }]
@@ -235,12 +255,44 @@ function initCharts() {
   const backButton = $("backButton");
   const shoulderButton = $("shoulderButton");
   const legButton = $("legButton");
+  const partButtons = {
+    "가슴": chestButton,
+    "등": backButton,
+    "어깨": shoulderButton,
+    "하체": legButton
+  };
 
-  chestButton?.addEventListener("click", () => loadPartStats("가슴"));
-  backButton?.addEventListener("click", () => loadPartStats("등"));
-  shoulderButton?.addEventListener("click", () => loadPartStats("어깨"));
-  legButton?.addEventListener("click", () => loadPartStats("하체"));
+  const setActivePartButton = (part) => {
+    Object.entries(partButtons).forEach(([name, button]) => {
+      if (!button) return;
+      button.classList.remove('btn-primary');
+      button.classList.add('btn-outline');
 
+      if (name === part) {
+        button.classList.add('btn-primary');
+        button.classList.remove('btn-outline');
+      }
+    });
+  };
+
+  chestButton?.addEventListener("click", () => {
+    setActivePartButton("가슴");
+    loadPartStats("가슴");
+  });
+  backButton?.addEventListener("click", () => {
+    setActivePartButton("등");
+    loadPartStats("등");
+  });
+  shoulderButton?.addEventListener("click", () => {
+    setActivePartButton("어깨");
+    loadPartStats("어깨");
+  });
+  legButton?.addEventListener("click", () => {
+    setActivePartButton("하체");
+    loadPartStats("하체");
+  });
+
+  setActivePartButton("가슴");
   loadPartStats("가슴");
 }
 
@@ -302,7 +354,7 @@ function initWorkouts() {
   const myWorkoutsBtn = $("myWorkoutsBtn");
   const workoutModal = $("workoutModal");
   const myWorkoutsModal = $("myWorkoutsModal");
-  const closeModal = document.querySelectorAll(".close");
+  const closeButtons = document.querySelectorAll(".close");
   const submitWorkoutBtn = $("submitWorkoutBtn");
   const filterDateBtn = $("filterDateBtn");
   const myWorkoutsList = $("myWorkoutsList");
@@ -338,7 +390,7 @@ function initWorkouts() {
 
       if (response.ok) {
         alert('운동 기록이 성공적으로 추가되었습니다.');
-        workoutModal.style.display = "none";
+        closeModal(workoutModal);
         location.reload();
       } else {
         alert('운동 기록 추가가 실패했습니다. 다시 시도해주세요.');
@@ -368,7 +420,7 @@ function initWorkouts() {
 
       if (response.ok) {
         alert('운동 기록이 성공적으로 수정되었습니다.');
-        workoutModal.style.display = "none";
+        closeModal(workoutModal);
         location.reload();
       } else {
         alert('운동 기록 수정이 실패했습니다. 다시 시도해주세요.');
@@ -403,7 +455,7 @@ function initWorkouts() {
   };
 
   const openEditModal = (workout) => {
-    workoutModal.style.display = "block";
+    openModal(workoutModal);
     $("work_name").value = workout.work_name;
     $("work_weight").value = workout.work_weight;
     $("work_count").value = workout.work_count;
@@ -413,16 +465,15 @@ function initWorkouts() {
     $("work_day").value = workout.work_day;
 
     submitWorkoutBtn.textContent = "수정";
-    submitWorkoutBtn.classList.remove('bg-zinc-900', 'hover:bg-zinc-800');
-    submitWorkoutBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
-    submitWorkoutBtn.removeEventListener("click", addWorkoutHandler);
+    submitWorkoutBtn.classList.remove('btn-primary');
+    submitWorkoutBtn.classList.add('btn-success');
     submitWorkoutBtn.onclick = () => updateWorkout(workout);
   };
 
   const resetSubmitButton = () => {
     submitWorkoutBtn.textContent = "등록";
-    submitWorkoutBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
-    submitWorkoutBtn.classList.add('bg-zinc-900', 'hover:bg-zinc-800');
+    submitWorkoutBtn.classList.remove('btn-success');
+    submitWorkoutBtn.classList.add('btn-primary');
     submitWorkoutBtn.onclick = addWorkoutHandler;
   };
 
@@ -442,16 +493,16 @@ function initWorkouts() {
       data.workouts.forEach(workout => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td class="px-3 py-3 text-center">${workout.work_num}</td>
-          <td class="px-3 py-3">${workout.work_name}</td>
-          <td class="px-3 py-3 text-center">${workout.work_weight || '-'}</td>
-          <td class="px-3 py-3 text-center">${workout.work_count}</td>
-          <td class="px-3 py-3 text-center">${workout.work_part}</td>
-          <td class="px-3 py-3 text-center">${workout.work_target || '-'}</td>
-          <td class="px-3 py-3 text-center">${workout.work_type || '-'}</td>
-          <td class="px-3 py-3 text-center">${formatDate(workout.work_day)}</td>
-          <td class="px-3 py-3 text-center"><button class="edit-btn rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-600">수정</button></td>
-          <td class="px-3 py-3 text-center"><button class="delete-btn rounded-lg bg-rose-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-600">삭제</button></td>
+          <td>${workout.work_num}</td>
+          <td>${workout.work_name}</td>
+          <td>${workout.work_weight || '-'}</td>
+          <td>${workout.work_count}</td>
+          <td>${workout.work_part}</td>
+          <td>${workout.work_target || '-'}</td>
+          <td>${workout.work_type || '-'}</td>
+          <td>${formatDate(workout.work_day)}</td>
+          <td><button class="edit-btn btn btn-xs btn-accent">수정</button></td>
+          <td><button class="delete-btn btn btn-xs btn-error">삭제</button></td>
         `;
 
         row.querySelector(".edit-btn").addEventListener("click", () => openEditModal(workout));
@@ -493,33 +544,33 @@ function initWorkouts() {
 
   addWorkoutBtn?.addEventListener("click", () => {
     resetSubmitButton();
-    workoutModal.style.display = "block";
+    openModal(workoutModal);
   });
 
   myWorkoutsBtn?.addEventListener("click", async () => {
-    myWorkoutsModal.style.display = "block";
+    openModal(myWorkoutsModal);
     await loadMyWorkouts();
   });
 
-  closeModal.forEach((btn) => {
+  closeButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      workoutModal.style.display = "none";
-      myWorkoutsModal.style.display = "none";
+      closeModal(workoutModal);
+      closeModal(myWorkoutsModal);
       resetSubmitButton();
     });
   });
 
   window.addEventListener("click", (event) => {
     if (event.target === workoutModal) {
-      workoutModal.style.display = "none";
+      closeModal(workoutModal);
       resetSubmitButton();
     }
     if (event.target === myWorkoutsModal) {
-      myWorkoutsModal.style.display = "none";
+      closeModal(myWorkoutsModal);
     }
   });
 
-  submitWorkoutBtn.addEventListener("click", addWorkoutHandler);
+  resetSubmitButton();
 
   filterDateBtn?.addEventListener("click", async () => {
     const selectedDate = $("filterDate").value;

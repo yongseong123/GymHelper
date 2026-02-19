@@ -1,40 +1,64 @@
 ﻿<!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="gym-light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymHelper - 로그인</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Pretendard", "Noto Sans KR", "sans-serif"]
-            }
-          }
+      (function () {
+        try {
+          const key = "gymhelper-theme";
+          const saved = localStorage.getItem(key);
+          const valid = saved === "gym-light" || saved === "gym-dark";
+          const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.setAttribute("data-theme", valid ? saved : (preferredDark ? "gym-dark" : "gym-light"));
+        } catch (_error) {
+          document.documentElement.setAttribute("data-theme", "gym-light");
         }
-      };
+      })();
     </script>
-    <script src="javascripts/logIn.js"></script>
+    <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
-<body class="min-h-screen bg-gradient-to-br from-zinc-100 via-orange-50 to-cyan-50 font-sans text-zinc-800">
-  <div class="mx-auto grid min-h-screen w-full max-w-md place-items-center p-6">
-      <div class="window w-full overflow-hidden rounded-3xl border border-white/70 bg-white/85 shadow-2xl backdrop-blur">
-          <div class="title-bar border-b border-zinc-200/80 px-6 py-4">
-              <span class="title text-sm font-semibold tracking-wide text-zinc-700">GymHelper</span>
-          </div>
-          <div class="login-container p-6">
-              <form class="login-form">
-                  <input type="text" placeholder="아이디" name="username" id="username" required class="mb-3 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100">
-                  <input type="password" placeholder="비밀번호" name="password" id="password" required class="mb-4 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100">
-                  <button type="button" onclick="login()" class="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-zinc-800">로그인</button>
-              </form>
-              <div class="signup-link mt-4 text-center">
-                <a href="/signUp" class="text-sm text-zinc-500 underline-offset-4 hover:text-zinc-700 hover:underline">회원가입</a>
-              </div>
-          </div>
+<body class="auth-bg">
+  <div class="relative flex min-h-screen items-center justify-center p-4">
+    <div class="absolute right-4 top-4 z-10">
+      <button type="button" class="btn btn-sm border border-base-300 bg-base-100/80 backdrop-blur" data-theme-toggle>
+        <span class="text-xs">테마</span>
+        <span data-theme-label class="badge badge-ghost badge-sm">다크</span>
+      </button>
+    </div>
+
+    <section class="card w-full max-w-md border border-base-300 bg-base-100 shadow-xl">
+      <div class="card-body gap-5 p-7">
+        <div class="space-y-2 text-center">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">GymHelper</p>
+          <h1 class="text-2xl font-bold text-balance">운동 기록을 한 곳에서 관리하세요</h1>
+          <p class="text-sm text-base-content/70">로그인 후 대시보드에서 루틴과 통계를 바로 확인할 수 있습니다.</p>
+        </div>
+
+        <form class="login-form space-y-3" onsubmit="event.preventDefault(); login();">
+          <label class="form-control w-full">
+            <span class="label-text pb-1 text-sm font-medium">아이디</span>
+            <input type="text" name="username" id="username" required class="input input-bordered w-full" placeholder="아이디를 입력하세요">
+          </label>
+
+          <label class="form-control w-full">
+            <span class="label-text pb-1 text-sm font-medium">비밀번호</span>
+            <input type="password" name="password" id="password" required class="input input-bordered w-full" placeholder="비밀번호를 입력하세요">
+          </label>
+
+          <button type="submit" class="btn btn-primary mt-2 w-full">로그인</button>
+        </form>
+
+        <div class="divider my-0">또는</div>
+
+        <a href="/signUp" class="btn btn-ghost w-full">회원가입</a>
       </div>
+    </section>
   </div>
+
+  <script src="/javascripts/theme.js"></script>
+  <script src="/javascripts/logIn.js"></script>
 </body>
 </html>
+
