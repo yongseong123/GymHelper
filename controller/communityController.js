@@ -1,97 +1,113 @@
-const communityModel = require('../model/communityModel');
+const communityModel = require("../model/communityModel");
 
-exports.getCommunityPage = async (req, res) => {
+const normalizeText = (value) => (typeof value === "string" ? value.trim() : "");
+
+exports.getCommunityPage = async (req, res, next) => {
   try {
     const posts = await communityModel.getAllPosts();
-    res.render('community', { posts });
+    return res.render("community", { posts });
   } catch (error) {
-    res.status(500).send("Server error");
+    return next(error);
   }
 };
 
 exports.createPost = async (req, res) => {
-  const { title, content } = req.body;
-  const trimmedTitle = title ? title.trim() : "";
-  const trimmedContent = content ? content.trim() : "";
+  const title = normalizeText(req.body.title);
+  const content = normalizeText(req.body.content);
   const writer = req.user.username;
 
-  if (!trimmedTitle || !trimmedContent) {
+  if (!title || !content) {
     return res.fail("Title and content are required.", 400);
   }
 
   try {
-    await communityModel.createPost({ writer, title: trimmedTitle, content: trimmedContent });
-    res.ok();
+    await communityModel.createPost({ writer, title, content });
+    return res.ok();
   } catch (error) {
-    res.fail("Failed to create post.", 500);
+    return res.fail("Failed to create post.", 500);
   }
 };
 
 exports.editPost = async (req, res) => {
-  const { title, content } = req.body;
-  const trimmedTitle = title ? title.trim() : "";
-  const trimmedContent = content ? content.trim() : "";
-  const postId = req.params.id;
+  const title = normalizeText(req.body.title);
+  const content = normalizeText(req.body.content);
+  const postId = Number(req.params.id);
 
-  if (!trimmedTitle || !trimmedContent) {
+  if (!postId) {
+    return res.fail("Invalid post id.", 400);
+  }
+
+  if (!title || !content) {
     return res.fail("Title and content are required.", 400);
   }
 
   try {
-    await communityModel.updatePost(postId, { title: trimmedTitle, content: trimmedContent });
-    res.ok();
+    await communityModel.updatePost(postId, { title, content });
+    return res.ok();
   } catch (error) {
-    res.fail("Failed to update post.", 500);
+    return res.fail("Failed to update post.", 500);
   }
 };
 
 exports.deletePost = async (req, res) => {
-  const postId = req.params.id;
+  const postId = Number(req.params.id);
+  if (!postId) {
+    return res.fail("Invalid post id.", 400);
+  }
 
   try {
     await communityModel.deletePost(postId);
-    res.ok();
+    return res.ok();
   } catch (error) {
-    res.fail("Failed to delete post.", 500);
+    return res.fail("Failed to delete post.", 500);
   }
 };
 
 exports.getPostAndComments = async (req, res) => {
-  const postId = req.params.id;
+  const postId = Number(req.params.id);
+  if (!postId) {
+    return res.fail("Invalid post id.", 400);
+  }
 
   try {
-    const post = await communityModel.getPostById(postId);
-    const comments = await communityModel.getCommentsByPostId(postId);
-    res.ok({ post, comments });
+    const [post, comments] = await Promise.all([
+      communityModel.getPostById(postId),
+      communityModel.getCommentsByPostId(postId),
+    ]);
+
+    return res.ok({ post, comments });
   } catch (error) {
-    res.fail("Failed to fetch post and comments.", 500);
+    return res.fail("Failed to fetch post and comments.", 500);
   }
 };
 
 exports.addComment = async (req, res) => {
-  const { board_id, content } = req.body;
-  const trimmedContent = content ? content.trim() : "";
+  const boardId = Number(req.body.board_id);
+  const content = normalizeText(req.body.content);
   const writer = req.user.username;
 
-  if (!board_id || !trimmedContent) {
+  if (!boardId || !content) {
     return res.fail("Comment content is required.", 400);
   }
 
   try {
-    await communityModel.createComment({ board_id, writer, content: trimmedContent });
-    res.ok();
+    await communityModel.createComment({ board_id: boardId, writer, content });
+    return res.ok();
   } catch (error) {
-    res.fail("Failed to add comment.", 500);
+    return res.fail("Failed to add comment.", 500);
   }
 };
 
 exports.deleteComment = async (req, res) => {
-  const replyId = req.params.id;
+  const replyId = Number(req.params.id);
+  if (!replyId) {
+    return res.fail("Invalid comment id.", 400);
+  }
 
   try {
     await communityModel.deleteComment(replyId);
-    res.ok();
+    return res.ok();
   } catch (error) {
-    res.fail("Failed to delete comment.", 500);
+    return res.fail("Failed to delete comment.", 500);
   }
 };

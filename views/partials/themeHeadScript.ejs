@@ -1,0 +1,13 @@
+﻿<script>
+  (function () {
+    try {
+      const key = "gymhelper-theme";
+      const saved = localStorage.getItem(key);
+      const valid = saved === "gym-light" || saved === "gym-dark";
+      const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.setAttribute("data-theme", valid ? saved : (preferredDark ? "gym-dark" : "gym-light"));
+    } catch (_error) {
+      document.documentElement.setAttribute("data-theme", "gym-light");
+    }
+  })();
+</script>

@@ -4,107 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymHelper - Account Settings</title>
-    <script>
-      (function () {
-        try {
-          const key = "gymhelper-theme";
-          const saved = localStorage.getItem(key);
-          const valid = saved === "gym-light" || saved === "gym-dark";
-          const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          document.documentElement.setAttribute("data-theme", valid ? saved : (preferredDark ? "gym-dark" : "gym-light"));
-        } catch (_error) {
-          document.documentElement.setAttribute("data-theme", "gym-light");
-        }
-      })();
-    </script>
+    <%- include("partials/themeHeadScript") %>
     <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 <body class="app-shell-bg">
-    <div class="drawer min-h-screen lg:drawer-open">
+    <div class="drawer min-h-screen" data-app-shell>
         <input id="app-shell-drawer-account" type="checkbox" class="drawer-toggle">
 
         <div class="drawer-content flex min-h-screen flex-col">
-            <header class="navbar border-b border-base-300 bg-base-100/90 px-4 backdrop-blur lg:px-6">
-                <div class="flex-none lg:hidden">
-                    <label for="app-shell-drawer-account" class="btn btn-square btn-ghost" aria-label="메뉴 열기">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-                        </svg>
-                    </label>
-                </div>
+            <header class="app-topbar sticky top-0 z-40 border-b border-base-300/80 bg-base-100/80 backdrop-blur-xl">
+                <div class="mx-auto flex w-full max-w-[1480px] items-center gap-2 px-3 py-2.5 sm:px-4 lg:px-6">
+                    <div class="flex items-center gap-2">
+                        <label for="app-shell-drawer-account" class="btn btn-square btn-ghost btn-sm lg:hidden" aria-label="메뉴 열기">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                            </svg>
+                        </label>
 
-                <div class="flex-1 gap-3">
-                    <a href="/work" class="text-lg font-semibold tracking-tight">GymHelper</a>
-                    <span class="badge badge-accent badge-outline hidden sm:inline-flex">Account</span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <div class="hidden items-center gap-2 rounded-box border border-base-300 bg-base-100 px-3 py-1 text-sm md:flex">
-                        <span class="text-base-content/70">회원</span>
-                        <span class="font-semibold" data-user-name>사용자</span>
+                        <a href="/work" class="inline-flex items-center gap-2 rounded-full px-2 py-1 text-base font-semibold tracking-tight sm:text-lg">
+                            <span class="inline-block h-2.5 w-2.5 rounded-full bg-primary"></span>
+                            GymHelper
+                        </a>
                     </div>
-                    <button type="button" class="btn btn-sm btn-ghost border border-base-300" data-theme-toggle>
-                        <span class="hidden sm:inline">테마</span>
-                        <span data-theme-label class="badge badge-ghost badge-sm">다크</span>
-                    </button>
+
+                    <nav class="ml-2 hidden items-center gap-1 lg:flex" aria-label="주요 메뉴">
+                        <a href="/work" class="top-nav-link">대시보드</a>
+                        <a href="/community" class="top-nav-link">커뮤니티</a>
+                        <a href="/accountSettings" class="top-nav-link active" aria-current="page">계정 설정</a>
+                    </nav>
+
+                    <div class="ml-auto flex items-center gap-2">
+                        <div class="hidden items-center gap-2 rounded-full border border-base-300 bg-base-100/80 px-3 py-1 text-sm md:flex">
+                            <span class="text-base-content/65">회원</span>
+                            <span class="font-semibold" data-user-name>사용자</span>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-ghost border border-base-300" data-theme-toggle>
+                            <span class="hidden sm:inline">테마</span>
+                            <span data-theme-label class="badge badge-ghost badge-sm">다크</span>
+                        </button>
+                    </div>
                 </div>
             </header>
 
-            <main class="flex-1 space-y-4 p-4 lg:p-6">
-                <section class="rounded-box border border-base-300 bg-base-100/85 p-4 shadow-sm">
-                    <h1 class="text-2xl font-bold">계정 설정</h1>
-                    <p class="mt-1 text-sm text-base-content/70">이름과 비밀번호를 변경하고 계정을 관리할 수 있습니다.</p>
+            <main class="mx-auto flex w-full max-w-[1480px] flex-1 flex-col gap-5 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
+                <section class="surface-card">
+                    <div class="card-body p-5 sm:p-6">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent/85">Account Settings</p>
+                        <h1 class="hero-title mt-2 text-2xl sm:text-3xl">계정 보안과 프로필 정보를 관리하세요</h1>
+                        <p class="mt-2 max-w-2xl text-sm text-base-content/70 sm:text-[0.95rem]">닉네임, 비밀번호를 안전하게 업데이트하고 계정 상태를 직접 제어할 수 있습니다.</p>
+                    </div>
                 </section>
 
-                <section class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.95fr)]">
+                <section class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.94fr)]">
                     <article class="surface-card">
-                        <div class="card-body p-5">
-                            <h2 class="card-title text-lg">이름 / 비밀번호 변경</h2>
-                            <p class="text-sm text-base-content/70">변경하려는 정보만 입력해도 저장됩니다.</p>
+                        <div class="card-body gap-4 p-5 sm:p-6">
+                            <div>
+                                <h2 class="card-title text-xl">이름 / 비밀번호 변경</h2>
+                                <p class="mt-1 text-sm text-base-content/70">변경하려는 항목만 입력 후 저장하세요.</p>
+                            </div>
 
-                            <form class="mt-2 space-y-3" onsubmit="event.preventDefault(); accountSet();">
+                            <form class="space-y-3" onsubmit="event.preventDefault(); accountSet();">
                                 <label class="form-control w-full">
-                                    <span class="label-text pb-1 text-sm">사용자 이름</span>
+                                    <span class="label-text pb-1 text-sm font-medium">사용자 이름</span>
                                     <input type="text" id="username" name="username" placeholder="새 사용자 이름" required class="input input-bordered w-full">
                                 </label>
 
                                 <label class="form-control w-full">
-                                    <span class="label-text pb-1 text-sm">비밀번호</span>
+                                    <span class="label-text pb-1 text-sm font-medium">비밀번호</span>
                                     <input type="password" id="password" name="password" placeholder="새 비밀번호" required class="input input-bordered w-full">
                                 </label>
 
                                 <label class="form-control w-full">
-                                    <span class="label-text pb-1 text-sm">비밀번호 확인</span>
+                                    <span class="label-text pb-1 text-sm font-medium">비밀번호 확인</span>
                                     <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인" required class="input input-bordered w-full">
                                 </label>
 
-                                <button type="submit" class="btn btn-primary mt-2 w-full">회원정보 수정</button>
+                                <button type="submit" class="btn btn-primary w-full">회원정보 수정</button>
                             </form>
                         </div>
                     </article>
 
                     <article class="surface-card border-error/45">
-                        <div class="card-body p-5">
-                            <h2 class="card-title text-lg text-error">위험 영역</h2>
-                            <p class="text-sm text-base-content/75">탈퇴 시 계정 정보와 연관 데이터가 복구되지 않을 수 있습니다.</p>
-
-                            <div class="mt-2 rounded-box border border-error/40 bg-error/10 p-4">
-                                <p class="text-sm">정말로 서비스 사용을 종료하려면 아래 버튼을 눌러 진행하세요.</p>
+                        <div class="card-body gap-4 p-5 sm:p-6">
+                            <div>
+                                <h2 class="card-title text-xl text-error">위험 영역</h2>
+                                <p class="mt-1 text-sm text-base-content/75">탈퇴를 진행하면 계정 복구가 어려울 수 있습니다.</p>
                             </div>
 
-                            <button type="button" class="btn btn-error mt-2" onclick="deleteAccount();">회원 탈퇴</button>
-                            <a href="/work" class="btn btn-ghost">메인 페이지로 돌아가기</a>
+                            <div class="rounded-box border border-error/35 bg-error/10 p-4 text-sm leading-relaxed text-base-content/85">
+                                정말로 서비스 사용을 종료하려면 회원 탈퇴 버튼을 눌러 진행하세요.
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                <button type="button" class="btn btn-error" onclick="deleteAccount();">회원 탈퇴</button>
+                                <a href="/work" class="btn btn-ghost">메인 페이지로 돌아가기</a>
+                            </div>
                         </div>
                     </article>
                 </section>
             </main>
         </div>
 
-        <div class="drawer-side z-40">
+        <div class="drawer-side z-[60] lg:hidden">
             <label for="app-shell-drawer-account" aria-label="메뉴 닫기" class="drawer-overlay"></label>
-            <aside class="drawer-panel p-4">
-                <div class="mb-6 px-2">
-                    <a href="/work" class="text-xl font-bold tracking-tight text-primary">GymHelper</a>
+            <aside class="drawer-panel flex min-h-full w-80 flex-col border-r border-base-300 bg-base-100/95 p-4 backdrop-blur-xl">
+                <div class="mb-6 rounded-box border border-base-300/70 bg-base-200/50 p-4">
+                    <a href="/work" class="text-lg font-bold tracking-tight text-primary">GymHelper</a>
                     <p class="mt-1 text-xs text-base-content/65">Manage your profile</p>
                 </div>
 
@@ -118,7 +124,8 @@
     </div>
 
     <script src="/javascripts/theme.js"></script>
+    <script src="/javascripts/feedback.js"></script>
+    <script src="/javascripts/apiClient.js"></script>
     <script src="/javascripts/accountSettings.js"></script>
 </body>
 </html>
-

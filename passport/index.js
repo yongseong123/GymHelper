@@ -1,24 +1,25 @@
-const passport = require("passport");
+﻿const passport = require("passport");
 const local = require("./localStrategy");
-const userModel = require("../model/usersModel"); // userModel 가져오기
+const userModel = require("../model/usersModel");
 
 module.exports = () => {
-  passport.serializeUser(function (user, cb) {
-    process.nextTick(function () {
-      cb(null, user.id); // session에 user.id 저장
+  passport.serializeUser((user, cb) => {
+    process.nextTick(() => {
+      cb(null, user.id);
     });
   });
 
-  passport.deserializeUser(async function (id, cb) {
+  passport.deserializeUser(async (id, cb) => {
     try {
-      const user = await userModel.getUserById(id); // id로 사용자 검색
+      const users = await userModel.getUserById(id);
 
-      if (!user || user.length === 0) {
-        return cb(new Error("User not found")); // 사용자 정보가 없으면 에러 반환
+      if (!users || users.length === 0) {
+        return cb(new Error("User not found"));
       }
-      return cb(null, user[0]); // 사용자 객체 반환
+
+      return cb(null, users[0]);
     } catch (error) {
-      return cb(error); // 에러 발생 시 에러 반환
+      return cb(error);
     }
   });
 

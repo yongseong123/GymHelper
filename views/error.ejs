@@ -4,19 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>오류 - GymHelper</title>
-  <script>
-    (function () {
-      try {
-        const key = "gymhelper-theme";
-        const saved = localStorage.getItem(key);
-        const valid = saved === "gym-light" || saved === "gym-dark";
-        const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        document.documentElement.setAttribute("data-theme", valid ? saved : (preferredDark ? "gym-dark" : "gym-light"));
-      } catch (_error) {
-        document.documentElement.setAttribute("data-theme", "gym-light");
-      }
-    })();
-  </script>
+  <%- include("partials/themeHeadScript") %>
   <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 <body class="app-shell-bg">

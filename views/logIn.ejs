@@ -4,61 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymHelper - 로그인</title>
-    <script>
-      (function () {
-        try {
-          const key = "gymhelper-theme";
-          const saved = localStorage.getItem(key);
-          const valid = saved === "gym-light" || saved === "gym-dark";
-          const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          document.documentElement.setAttribute("data-theme", valid ? saved : (preferredDark ? "gym-dark" : "gym-light"));
-        } catch (_error) {
-          document.documentElement.setAttribute("data-theme", "gym-light");
-        }
-      })();
-    </script>
+    <%- include("partials/themeHeadScript") %>
     <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 <body class="auth-bg">
-  <div class="relative flex min-h-screen items-center justify-center p-4">
-    <div class="absolute right-4 top-4 z-10">
-      <button type="button" class="btn btn-sm border border-base-300 bg-base-100/80 backdrop-blur" data-theme-toggle>
+  <div class="relative isolate flex min-h-screen items-center justify-center overflow-hidden p-4 sm:p-6">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,color-mix(in_oklab,var(--color-primary)_16%,transparent)_0%,transparent_42%),radial-gradient(circle_at_88%_8%,color-mix(in_oklab,var(--color-accent)_14%,transparent)_0%,transparent_44%)]"></div>
+
+    <div class="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+      <button type="button" class="btn btn-sm border border-base-300 bg-base-100/85 backdrop-blur" data-theme-toggle>
         <span class="text-xs">테마</span>
         <span data-theme-label class="badge badge-ghost badge-sm">다크</span>
       </button>
     </div>
 
-    <section class="card w-full max-w-md border border-base-300 bg-base-100 shadow-xl">
-      <div class="card-body gap-5 p-7">
-        <div class="space-y-2 text-center">
-          <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">GymHelper</p>
-          <h1 class="text-2xl font-bold text-balance">운동 기록을 한 곳에서 관리하세요</h1>
-          <p class="text-sm text-base-content/70">로그인 후 대시보드에서 루틴과 통계를 바로 확인할 수 있습니다.</p>
+    <section class="auth-panel card w-full max-w-[980px] overflow-hidden border border-base-300 bg-base-100/90 shadow-2xl">
+      <div class="grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+        <aside class="hidden border-r border-base-300/70 bg-base-200/35 p-8 lg:flex lg:flex-col lg:justify-between">
+          <div class="space-y-4">
+            <p class="text-xs font-bold uppercase tracking-[0.24em] text-primary">GymHelper</p>
+            <h1 class="text-3xl font-bold leading-tight">운동 기록과 성장 지표를<br>한곳에서 관리하세요</h1>
+            <p class="text-sm text-base-content/70">대시보드, 캘린더, 커뮤니티를 연결해 일관된 루틴을 유지할 수 있습니다.</p>
+          </div>
+
+          <ul class="space-y-2 text-sm text-base-content/80">
+            <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>월간 부위별 통계</li>
+            <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>운동 캘린더 기록</li>
+            <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>커뮤니티 피드백 공유</li>
+          </ul>
+        </aside>
+
+        <div class="card-body gap-5 p-6 sm:p-8">
+          <div class="space-y-2 text-center lg:text-left">
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary lg:hidden">GymHelper</p>
+            <h2 class="text-2xl font-bold text-balance">로그인</h2>
+            <p class="text-sm text-base-content/70">계정으로 로그인해 루틴 기록을 이어서 관리하세요.</p>
+          </div>
+
+          <form class="login-form space-y-3" onsubmit="event.preventDefault(); login();">
+            <label class="form-control w-full">
+              <span class="label-text pb-1 text-sm font-medium">아이디</span>
+              <input type="text" name="username" id="username" required class="input input-bordered w-full" placeholder="아이디를 입력하세요">
+            </label>
+
+            <label class="form-control w-full">
+              <span class="label-text pb-1 text-sm font-medium">비밀번호</span>
+              <input type="password" name="password" id="password" required class="input input-bordered w-full" placeholder="비밀번호를 입력하세요">
+            </label>
+
+            <button type="submit" class="btn btn-primary mt-2 w-full">로그인</button>
+          </form>
+
+          <div class="divider my-0">또는</div>
+
+          <a href="/signUp" class="btn btn-ghost w-full">회원가입</a>
         </div>
-
-        <form class="login-form space-y-3" onsubmit="event.preventDefault(); login();">
-          <label class="form-control w-full">
-            <span class="label-text pb-1 text-sm font-medium">아이디</span>
-            <input type="text" name="username" id="username" required class="input input-bordered w-full" placeholder="아이디를 입력하세요">
-          </label>
-
-          <label class="form-control w-full">
-            <span class="label-text pb-1 text-sm font-medium">비밀번호</span>
-            <input type="password" name="password" id="password" required class="input input-bordered w-full" placeholder="비밀번호를 입력하세요">
-          </label>
-
-          <button type="submit" class="btn btn-primary mt-2 w-full">로그인</button>
-        </form>
-
-        <div class="divider my-0">또는</div>
-
-        <a href="/signUp" class="btn btn-ghost w-full">회원가입</a>
       </div>
     </section>
   </div>
 
   <script src="/javascripts/theme.js"></script>
+  <script src="/javascripts/feedback.js"></script>
+  <script src="/javascripts/apiClient.js"></script>
   <script src="/javascripts/logIn.js"></script>
 </body>
 </html>
-

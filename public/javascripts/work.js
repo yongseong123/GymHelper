@@ -8,6 +8,21 @@ const formatDate = (dateStr) => {
   return `${year}-${month}-${day}`;
 };
 
+const notify = (message, type = "info") => {
+  if (window.GymFeedback?.notify) {
+    window.GymFeedback.notify(message, { type });
+    return;
+  }
+
+  alert(message);
+};
+
+const flash = (message, type = "info") => {
+  if (window.GymFeedback?.flash) {
+    window.GymFeedback.flash(message, type);
+  }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   initLogout();
   initCharts();
@@ -27,13 +42,13 @@ function initLogout() {
       });
 
       if (response.ok) {
-        alert('로그아웃 성공!');
+        flash('로그아웃되었습니다.', 'success');
         window.location.href = '/logIn';
       } else {
-        alert('로그아웃에 실패했습니다.');
+        notify('로그아웃에 실패했습니다.', 'error');
       }
     } catch (error) {
-      alert('로그아웃 중 오류가 발생했습니다.');
+      notify('로그아웃 중 오류가 발생했습니다.', 'error');
     }
   });
 }
@@ -342,6 +357,7 @@ function initWorkouts() {
   const myWorkoutsList = $("myWorkoutsList");
   const workoutModalTitle = $("workoutModalTitle");
   const workoutModalDesc = $("workoutModalDesc");
+  const workoutForm = $("workoutForm");
 
   if (!workoutModal || !myWorkoutsModal || !submitWorkoutBtn || !myWorkoutsList) return;
 
@@ -371,6 +387,29 @@ function initWorkouts() {
 
   const workPartSelect = $("work_part");
   const workTargetSelect = $("work_target");
+  const targetOptionsByPart = {
+    "가슴": ["인클라인", "플랫", "디클라인"],
+    "등": ["광배", "능모"],
+    "어깨": ["전면", "측면", "후면"],
+    "하체": ["대퇴", "둔부"]
+  };
+
+  const syncTargetOptions = (part, selectedTarget = "") => {
+    if (!workTargetSelect) return;
+
+    workTargetSelect.innerHTML = "<option value=''>선택해주세요</option>";
+    const options = targetOptionsByPart[part] || [];
+
+    options.forEach((option) => {
+      const optElement = document.createElement("option");
+      optElement.value = option;
+      optElement.textContent = option;
+      if (selectedTarget && option === selectedTarget) {
+        optElement.selected = true;
+      }
+      workTargetSelect.appendChild(optElement);
+    });
+  };
 
   const getFormValues = () => ({
     work_name: $("work_name").value,
@@ -385,7 +424,7 @@ function initWorkouts() {
   const addWorkoutHandler = async () => {
     const values = getFormValues();
     if (!values.work_name || !values.work_count || !values.work_part || !values.work_day) {
-      alert("필수 항목을 입력해주세요.");
+      notify("필수 항목을 입력해주세요.", "warning");
       return;
     }
 
@@ -397,20 +436,21 @@ function initWorkouts() {
       });
 
       if (response.ok) {
-        alert('운동 기록이 성공적으로 추가되었습니다.');
+        flash('운동 기록이 추가되었습니다.', 'success');
         closeAppModal(workoutModal);
         location.reload();
       } else {
-        alert('운동 기록 추가가 실패했습니다. 다시 시도해주세요.');
+        notify('운동 기록 추가가 실패했습니다. 다시 시도해주세요.', 'error');
       }
     } catch (error) {
+      notify('운동 기록 추가 중 오류가 발생했습니다.', 'error');
     }
   };
 
   const updateWorkout = async (workout) => {
     const values = getFormValues();
     if (!values.work_name || !values.work_count || !values.work_part || !values.work_day) {
-      alert("필수 항목을 입력해주세요.");
+      notify("필수 항목을 입력해주세요.", "warning");
       return;
     }
 
@@ -426,13 +466,14 @@ function initWorkouts() {
       });
 
       if (response.ok) {
-        alert('운동 기록이 성공적으로 수정되었습니다.');
+        flash('운동 기록이 수정되었습니다.', 'success');
         closeAppModal(workoutModal);
         location.reload();
       } else {
-        alert('운동 기록 수정이 실패했습니다. 다시 시도해주세요.');
+        notify('운동 기록 수정이 실패했습니다. 다시 시도해주세요.', 'error');
       }
     } catch (error) {
+      notify('운동 기록 수정 중 오류가 발생했습니다.', 'error');
     }
   };
 
@@ -450,12 +491,13 @@ function initWorkouts() {
       });
 
       if (response.ok) {
-        alert('운동 기록이 성공적으로 삭제되었습니다.');
+        flash('운동 기록이 삭제되었습니다.', 'success');
         location.reload();
       } else {
-        alert('운동 기록 삭제가 실패했습니다. 다시 시도해주세요.');
+        notify('운동 기록 삭제가 실패했습니다. 다시 시도해주세요.', 'error');
       }
     } catch (error) {
+      notify('운동 기록 삭제 중 오류가 발생했습니다.', 'error');
     }
   };
 
@@ -464,6 +506,8 @@ function initWorkouts() {
     submitWorkoutBtn.classList.remove('btn-success');
     submitWorkoutBtn.classList.add('btn-primary');
     submitWorkoutBtn.onclick = addWorkoutHandler;
+    workoutForm?.reset();
+    syncTargetOptions("");
 
     if (workoutModalTitle) {
       workoutModalTitle.textContent = "운동 기록 작성";
@@ -475,13 +519,15 @@ function initWorkouts() {
 
   const openEditModal = (workout, triggerEl) => {
     const openEditor = () => {
+      const workDay = workout.work_day ? formatDate(workout.work_day) : "";
+
       $("work_name").value = workout.work_name;
-      $("work_weight").value = workout.work_weight;
+      $("work_weight").value = workout.work_weight ?? "";
       $("work_count").value = workout.work_count;
       $("work_part").value = workout.work_part;
-      $("work_target").value = workout.work_target || "";
+      syncTargetOptions(workout.work_part, workout.work_target || "");
       $("work_type").value = workout.work_type || "";
-      $("work_day").value = workout.work_day;
+      $("work_day").value = workDay;
 
       submitWorkoutBtn.textContent = "수정";
       submitWorkoutBtn.classList.remove('btn-primary');
@@ -520,19 +566,32 @@ function initWorkouts() {
       const data = await response.json();
       if (!data.success) return;
 
+      if (!Array.isArray(data.workouts) || data.workouts.length === 0) {
+        const emptyRow = document.createElement("tr");
+        emptyRow.innerHTML = `
+          <td colspan=\"10\">
+            <div class=\"py-8 text-center text-sm text-base-content/70\">
+              조회된 운동 기록이 없습니다.
+            </div>
+          </td>
+        `;
+        myWorkoutsList.appendChild(emptyRow);
+        return;
+      }
+
       data.workouts.forEach((workout) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${workout.work_num}</td>
-          <td>${workout.work_name}</td>
-          <td>${workout.work_weight || '-'}</td>
-          <td>${workout.work_count}</td>
+          <td class=\"font-medium text-base-content/80\">${workout.work_num}</td>
+          <td class=\"font-semibold\">${workout.work_name}</td>
+          <td class=\"text-right tabular-nums\">${workout.work_weight || '-'}</td>
+          <td class=\"text-right tabular-nums\">${workout.work_count}</td>
           <td>${workout.work_part}</td>
           <td>${workout.work_target || '-'}</td>
           <td>${workout.work_type || '-'}</td>
-          <td>${formatDate(workout.work_day)}</td>
-          <td><button class="edit-btn btn btn-xs btn-accent">수정</button></td>
-          <td><button class="delete-btn btn btn-xs btn-error">삭제</button></td>
+          <td class=\"tabular-nums\">${formatDate(workout.work_day)}</td>
+          <td class=\"text-center\"><button class=\"edit-btn btn btn-xs btn-accent\" aria-label=\"운동 기록 수정\">수정</button></td>
+          <td class=\"text-center\"><button class=\"delete-btn btn btn-xs btn-error btn-outline\" aria-label=\"운동 기록 삭제\">삭제</button></td>
         `;
 
         const editBtn = row.querySelector(".edit-btn");
@@ -545,31 +604,7 @@ function initWorkouts() {
   };
 
   workPartSelect?.addEventListener("change", () => {
-    const part = workPartSelect.value;
-    workTargetSelect.innerHTML = "<option value=''>선택해주세요</option>";
-
-    let options = [];
-    switch (part) {
-      case "가슴":
-        options = ["인클라인", "플랫", "디클라인"];
-        break;
-      case "등":
-        options = ["광배", "능모"];
-        break;
-      case "어깨":
-        options = ["전면", "측면", "후면"];
-        break;
-      case "하체":
-        options = ["대퇴", "둔부"];
-        break;
-    }
-
-    options.forEach((option) => {
-      const optElement = document.createElement("option");
-      optElement.value = option;
-      optElement.textContent = option;
-      workTargetSelect.appendChild(optElement);
-    });
+    syncTargetOptions(workPartSelect.value);
   });
 
   if (window.ModalManager) {
@@ -603,9 +638,7 @@ function initWorkouts() {
 
   filterDateBtn?.addEventListener("click", async () => {
     const selectedDate = $("filterDate").value;
-    if (selectedDate) {
-      await loadMyWorkouts(selectedDate);
-    }
+    await loadMyWorkouts(selectedDate || null);
   });
 }
 

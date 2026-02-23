@@ -3,11 +3,21 @@ const createError = require("http-errors");
 const usersModel = require("../model/usersModel");
 const bcrypt = require("bcrypt");
 
-exports.signUp = async function (req, res, next) {
+const normalizeText = (value) => (typeof value === "string" ? value.trim() : "");
+
+exports.signUp = async (req, res, next) => {
   try {
-    const { id, password, checkedPassword, username } = req.body;
+    const id = normalizeText(req.body.id);
+    const username = normalizeText(req.body.username);
+    const password = req.body.password;
+    const checkedPassword = req.body.checkedPassword;
+
     if (!id || !password || !checkedPassword || !username) {
       return res.fail("Missing required fields", 400);
+    }
+
+    if (!/^[a-zA-Z0-9]{5,20}$/.test(id)) {
+      return res.fail("ID must be 5-20 characters of letters and numbers only", 422);
     }
 
     if (await usersModel.checkIdDuplication(id)) {
@@ -26,13 +36,18 @@ exports.signUp = async function (req, res, next) {
   }
 };
 
-exports.idCheck = async function (req, res, next) {
+exports.idCheck = async (req, res, next) => {
   try {
-    if (req.body.id === undefined) {
+    const id = normalizeText(req.body.id);
+    if (!id) {
       return res.fail("Missing required fields", 400);
     }
 
-    if (await usersModel.checkIdDuplication(req.body.id)) {
+    if (!/^[a-zA-Z0-9]{5,20}$/.test(id)) {
+      return res.fail("ID must be 5-20 characters of letters and numbers only", 422);
+    }
+
+    if (await usersModel.checkIdDuplication(id)) {
       return res.fail("ID already exists", 409);
     }
 
@@ -42,7 +57,7 @@ exports.idCheck = async function (req, res, next) {
   }
 };
 
-exports.logIn = function (req, res, next) {
+exports.logIn = (req, res, next) => {
   if (!req.body.id || !req.body.password) {
     return res.fail("Missing required fields", 400);
   }
@@ -65,8 +80,8 @@ exports.logIn = function (req, res, next) {
   })(req, res, next);
 };
 
-exports.logOut = function (req, res, next) {
-  req.logOut(function (err) {
+exports.logOut = (req, res, next) => {
+  req.logOut((err) => {
     if (err) {
       return next(createError(500, "logout_error"));
     }
@@ -74,24 +89,28 @@ exports.logOut = function (req, res, next) {
   });
 };
 
-exports.modifyUserInfo = async function (req, res, next) {
+exports.modifyUserInfo = async (req, res, next) => {
   try {
     if (!req.user) return res.fail("User not authenticated", 401);
 
-    const { password, confirmPassword, username } = req.body;
-    if (!password && !username) return res.fail("Missing required fields", 400);
+    const nextUsername = normalizeText(req.body.username);
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+
+    if (!password && !nextUsername) {
+      return res.fail("Missing required fields", 400);
+    }
 
     if (password) {
+      if (!confirmPassword) return res.fail("Confirm password is required", 400);
       if (password !== confirmPassword) return res.fail("Passwords do not match", 422);
-      if (password.length <= 0) return res.fail("Password must be at least 0 characters long", 422);
 
       const hashedPassword = await bcrypt.hash(password, 12);
       await usersModel.changePassword(req.user.id, hashedPassword);
     }
 
-    if (username) {
-      if (username.length <= 0) return res.fail("Username must be at least 0 characters long", 422);
-      await usersModel.changeName(req.user.id, username);
+    if (nextUsername) {
+      await usersModel.changeName(req.user.id, nextUsername);
     }
 
     return res.ok({ message: "User info updated successfully" });
@@ -100,7 +119,7 @@ exports.modifyUserInfo = async function (req, res, next) {
   }
 };
 
-exports.getUserName = async function (req, res, next) {
+exports.getUserName = async (req, res, next) => {
   try {
     if (!req.user) return res.fail("User not authenticated", 401);
     const name = await usersModel.getUserName(req.user.id);
@@ -110,12 +129,12 @@ exports.getUserName = async function (req, res, next) {
   }
 };
 
-exports.deleteUser = async function (req, res, next) {
+exports.deleteUser = async (req, res, next) => {
   try {
     if (!req.user) return res.fail("User not authenticated or not found", 400);
 
     await usersModel.deleteUser(req.user.id);
-    req.logOut(function (err) {
+    req.logOut((err) => {
       if (err) {
         return next(createError(500, "logout_error"));
       }

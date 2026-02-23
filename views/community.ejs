@@ -1,80 +1,83 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="gym-light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymHelper - Community</title>
-    <script>
-      (function () {
-        try {
-          const key = "gymhelper-theme";
-          const saved = localStorage.getItem(key);
-          const valid = saved === "gym-light" || saved === "gym-dark";
-          const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          document.documentElement.setAttribute("data-theme", valid ? saved : (preferredDark ? "gym-dark" : "gym-light"));
-        } catch (_error) {
-          document.documentElement.setAttribute("data-theme", "gym-light");
-        }
-      })();
-    </script>
+    <%- include("partials/themeHeadScript") %>
     <link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 <body class="app-shell-bg">
-    <div class="drawer min-h-screen lg:drawer-open" data-app-shell>
+    <div class="drawer min-h-screen" data-app-shell>
         <input id="app-shell-drawer-community" type="checkbox" class="drawer-toggle">
 
         <div class="drawer-content flex min-h-screen flex-col">
-            <header class="navbar border-b border-base-300 bg-base-100/90 px-4 backdrop-blur lg:px-6">
-                <div class="flex-none lg:hidden">
-                    <label for="app-shell-drawer-community" class="btn btn-square btn-ghost" aria-label="메뉴 열기">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-                        </svg>
-                    </label>
-                </div>
+            <header class="app-topbar sticky top-0 z-40 border-b border-base-300/80 bg-base-100/80 backdrop-blur-xl">
+                <div class="mx-auto flex w-full max-w-[1480px] items-center gap-2 px-3 py-2.5 sm:px-4 lg:px-6">
+                    <div class="flex items-center gap-2">
+                        <label for="app-shell-drawer-community" class="btn btn-square btn-ghost btn-sm lg:hidden" aria-label="메뉴 열기">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                            </svg>
+                        </label>
 
-                <div class="flex-1 gap-3">
-                    <a href="/work" class="text-lg font-semibold tracking-tight">GymHelper</a>
-                    <span class="badge badge-secondary badge-outline hidden sm:inline-flex">Community</span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <div class="hidden items-center gap-2 rounded-box border border-base-300 bg-base-100 px-3 py-1 text-sm md:flex">
-                        <span class="text-base-content/70">회원</span>
-                        <span class="font-semibold" data-user-name>사용자</span>
+                        <a href="/work" class="inline-flex items-center gap-2 rounded-full px-2 py-1 text-base font-semibold tracking-tight sm:text-lg">
+                            <span class="inline-block h-2.5 w-2.5 rounded-full bg-primary"></span>
+                            GymHelper
+                        </a>
                     </div>
-                    <button type="button" class="btn btn-sm btn-ghost border border-base-300" data-theme-toggle>
-                        <span class="hidden sm:inline">테마</span>
-                        <span data-theme-label class="badge badge-ghost badge-sm">다크</span>
-                    </button>
-                    <button id="writePostBtn" class="btn btn-primary btn-sm">게시글 작성</button>
+
+                    <nav class="ml-2 hidden items-center gap-1 lg:flex" aria-label="주요 메뉴">
+                        <a href="/work" class="top-nav-link">대시보드</a>
+                        <a href="/community" class="top-nav-link active" aria-current="page">커뮤니티</a>
+                        <a href="/accountSettings" class="top-nav-link">계정 설정</a>
+                    </nav>
+
+                    <div class="ml-auto flex items-center gap-2">
+                        <div class="hidden items-center gap-2 rounded-full border border-base-300 bg-base-100/80 px-3 py-1 text-sm md:flex">
+                            <span class="text-base-content/65">회원</span>
+                            <span class="font-semibold" data-user-name>사용자</span>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-ghost border border-base-300" data-theme-toggle>
+                            <span class="hidden sm:inline">테마</span>
+                            <span data-theme-label class="badge badge-ghost badge-sm">다크</span>
+                        </button>
+
+                        <button id="writePostBtn" class="btn btn-primary btn-sm">게시글 작성</button>
+                    </div>
                 </div>
             </header>
 
-            <main class="flex-1 space-y-4 p-4 lg:p-6">
-                <section class="rounded-box border border-base-300 bg-base-100/85 p-4 shadow-sm">
-                    <h1 class="text-2xl font-bold">자유게시판</h1>
-                    <p class="mt-1 text-sm text-base-content/70">운동 루틴, 기록 팁, 질문을 자유롭게 공유하세요.</p>
+            <main class="mx-auto flex w-full max-w-[1480px] flex-1 flex-col gap-5 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
+                <section class="surface-card">
+                    <div class="card-body p-5 sm:p-6">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary/85">Community Feed</p>
+                        <h1 class="hero-title mt-2 text-2xl sm:text-3xl">운동 기록과 질문을 함께 나누는 공간</h1>
+                        <p class="mt-2 max-w-2xl text-sm text-base-content/70 sm:text-[0.95rem]">루틴, 회복, 식단, 장비 팁을 자유롭게 공유하세요. 게시글을 클릭하면 상세/댓글 모달에서 바로 이어서 작업할 수 있습니다.</p>
+                    </div>
                 </section>
 
-                <section class="surface-card">
-                    <div class="card-body p-4">
+                <section class="surface-card overflow-hidden">
+                    <div class="card-body p-4 sm:p-5">
                         <% if (posts && posts.length > 0) { %>
-                            <div class="overflow-x-auto rounded-box border border-base-300">
-                                <table class="table table-zebra min-w-[760px]">
+                            <div class="overflow-x-auto rounded-box border border-base-300/75 bg-base-100/70">
+                                <table class="table table-zebra min-w-[780px] modal-table">
                                     <thead>
                                         <tr>
-                                            <th>번호</th>
+                                            <th class="w-24">번호</th>
                                             <th>제목</th>
-                                            <th>작성일</th>
-                                            <th>작성자</th>
+                                            <th class="w-44">작성일</th>
+                                            <th class="w-40">작성자</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% posts.forEach(post => { %>
-                                            <tr class="post-item cursor-pointer" data-id="<%= post.board_id %>" data-title="<%= post.title %>" data-content="<%= post.content %>">
-                                                <td><%= post.board_id %></td>
-                                                <td class="font-medium"><%= post.title %></td>
+                                            <tr class="post-item cursor-pointer transition hover:bg-primary/10" data-id="<%= post.board_id %>" data-title="<%= post.title %>" data-content="<%= post.content %>">
+                                                <td class="font-medium text-base-content/80"><%= post.board_id %></td>
+                                                <td>
+                                                    <p class="line-clamp-1 font-semibold"><%= post.title %></p>
+                                                </td>
                                                 <td><%= new Date(post.regdate).toISOString().slice(0, 10) %></td>
                                                 <td><%= post.writer %></td>
                                             </tr>
@@ -83,8 +86,8 @@
                                 </table>
                             </div>
                         <% } else { %>
-                            <div class="alert">
-                                <span>게시글이 없습니다.</span>
+                            <div class="alert border border-base-300/70 bg-base-200/60">
+                                <span>아직 등록된 게시글이 없습니다. 첫 게시글을 작성해보세요.</span>
                             </div>
                         <% } %>
                     </div>
@@ -92,11 +95,11 @@
             </main>
         </div>
 
-        <div class="drawer-side z-40">
+        <div class="drawer-side z-[60] lg:hidden">
             <label for="app-shell-drawer-community" aria-label="메뉴 닫기" class="drawer-overlay"></label>
-            <aside class="drawer-panel p-4">
-                <div class="mb-6 px-2">
-                    <a href="/work" class="text-xl font-bold tracking-tight text-primary">GymHelper</a>
+            <aside class="drawer-panel flex min-h-full w-80 flex-col border-r border-base-300 bg-base-100/95 p-4 backdrop-blur-xl">
+                <div class="mb-6 rounded-box border border-base-300/70 bg-base-200/50 p-4">
+                    <a href="/work" class="text-lg font-bold tracking-tight text-primary">GymHelper</a>
                     <p class="mt-1 text-xs text-base-content/65">Share your workout notes</p>
                 </div>
 
@@ -106,9 +109,9 @@
                     <li><a href="/accountSettings" class="menu-link">계정 설정</a></li>
                 </ul>
 
-                <div class="mt-6 rounded-box border border-base-300 bg-base-200/70 p-4 text-sm text-base-content/75">
+                <div class="mt-6 rounded-box border border-base-300/70 bg-base-200/55 p-4 text-sm text-base-content/75">
                     <p class="font-semibold text-base-content">커뮤니티 가이드</p>
-                    <p class="mt-1">상호 존중하는 표현으로 건강한 운동 문화를 함께 만들어주세요.</p>
+                    <p class="mt-1 leading-relaxed">서로 존중하는 표현으로 더 건강한 운동 문화를 만들어 주세요.</p>
                 </div>
             </aside>
         </div>
@@ -119,24 +122,26 @@
         <div class="app-modal-shell">
             <div class="app-modal-panel sm:max-w-2xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="postModalTitle" aria-describedby="postModalDesc">
                 <div class="app-modal-handle"><span></span></div>
+
                 <header class="app-modal-header">
-                    <div>
+                    <div class="space-y-1">
+                        <p class="modal-kicker">Create Post</p>
                         <h2 id="postModalTitle" class="text-lg font-bold sm:text-xl">게시글 작성</h2>
-                        <p id="postModalDesc" class="mt-1 text-sm text-base-content/70">운동 기록과 질문을 간단히 공유해보세요.</p>
+                        <p id="postModalDesc" class="text-sm text-base-content/70">짧은 질문도 괜찮습니다. 제목과 내용을 입력해 공유해보세요.</p>
                     </div>
-                    <button type="button" class="close btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                    <button type="button" class="close app-modal-close btn btn-sm btn-circle btn-ghost" aria-label="Close">×</button>
                 </header>
 
                 <div class="app-modal-body">
                     <form id="postForm" class="space-y-3">
                         <label class="form-control w-full">
-                            <span class="label-text pb-1 text-sm">제목</span>
-                            <input type="text" id="postTitle" name="title" required class="input input-bordered w-full">
+                            <span class="label-text pb-1 text-sm font-medium">제목 <span class="text-error">*</span></span>
+                            <input type="text" id="postTitle" name="title" required class="input input-bordered w-full" placeholder="예: 하체 루틴 점검 부탁드립니다">
                         </label>
 
                         <label class="form-control w-full">
-                            <span class="label-text pb-1 text-sm">내용</span>
-                            <textarea id="postContent" name="content" rows="8" required class="textarea textarea-bordered w-full"></textarea>
+                            <span class="label-text pb-1 text-sm font-medium">내용 <span class="text-error">*</span></span>
+                            <textarea id="postContent" name="content" rows="8" required class="textarea textarea-bordered w-full" placeholder="운동 상황, 목표, 궁금한 점을 구체적으로 적어주세요."></textarea>
                         </label>
                     </form>
                 </div>
@@ -156,51 +161,68 @@
         <div class="app-modal-shell">
             <div class="app-modal-panel sm:max-w-4xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="viewPostTitle" aria-describedby="viewPostDesc">
                 <div class="app-modal-handle"><span></span></div>
+
                 <header class="app-modal-header">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-base-content/60">Post Detail</p>
-                        <p id="viewPostDesc" class="mt-1 text-sm text-base-content/70">게시글과 댓글을 확인하고 필요한 작업을 수행하세요.</p>
+                    <div class="space-y-1">
+                        <p class="modal-kicker">Post Detail</p>
+                        <p id="viewPostDesc" class="text-sm text-base-content/70">상단 게시글 정보와 본문을 확인한 뒤 댓글 작성/수정/삭제 작업을 진행하세요.</p>
                     </div>
-                    <button type="button" class="close-view btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                    <button type="button" class="close-view app-modal-close btn btn-sm btn-circle btn-ghost" aria-label="Close">×</button>
                 </header>
 
                 <div class="app-modal-body space-y-4">
-                    <section class="space-y-3">
-                        <h2 id="viewPostTitle" class="text-2xl font-bold">제목</h2>
-                        <p id="viewPostContent" class="rounded-box border border-base-300 bg-base-200/60 p-4 text-sm leading-6">내용</p>
-                        <div class="text-xs text-base-content/70">
-                            <span id="viewPostDate">작성일</span>
-                            <span class="mx-1">|</span>
-                            <span id="viewPostWriter">작성자</span>
+                    <section class="post-detail-block modal-block space-y-4">
+                        <div class="space-y-3">
+                            <h2 id="viewPostTitle" class="post-detail-title text-2xl font-bold leading-snug">제목</h2>
+
+                            <div class="post-detail-meta-grid" aria-label="게시글 메타 정보">
+                                <div class="post-detail-meta-item">
+                                    <span class="post-detail-meta-label">작성일</span>
+                                    <strong id="viewPostDate" class="post-detail-meta-value">작성일</strong>
+                                </div>
+                                <div class="post-detail-meta-item">
+                                    <span class="post-detail-meta-label">작성자</span>
+                                    <strong id="viewPostWriter" class="post-detail-meta-value">작성자</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <article id="viewPostContent" class="post-detail-content whitespace-pre-wrap break-words text-sm leading-7">내용</article>
+
+                        <div class="post-detail-action-row">
+                            <button type="button" id="editPostBtn" class="btn btn-primary w-full sm:w-auto">게시글 수정</button>
+                            <button type="button" id="deletePostBtn" class="btn btn-error btn-outline w-full sm:w-auto">게시글 삭제</button>
                         </div>
                     </section>
 
-                    <section class="rounded-box border border-base-300 bg-base-200/55 p-4">
-                        <h3 class="mb-3 text-sm font-semibold">댓글</h3>
-                        <div id="commentList" class="space-y-2"></div>
+                    <section class="comment-list-block modal-block space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <h3 class="text-sm font-semibold tracking-wide text-base-content/85">댓글 목록</h3>
+                            <span class="text-xs text-base-content/60">최신순</span>
+                        </div>
+
+                        <div id="commentList" class="max-h-[300px] space-y-2 overflow-y-auto pr-1" aria-live="polite"></div>
                     </section>
 
-                    <section>
-                        <h3 class="mb-2 text-sm font-semibold">댓글 작성</h3>
+                    <section class="comment-compose-block modal-block space-y-3">
+                        <h3 class="text-sm font-semibold tracking-wide text-base-content/85">댓글 작성</h3>
                         <form id="commentForm" class="space-y-3">
                             <label class="form-control w-full">
-                                <span class="label-text pb-1 text-sm">내용</span>
-                                <textarea id="commentContent" name="commentContent" rows="3" required class="textarea textarea-bordered w-full"></textarea>
+                                <span class="label-text pb-1 text-sm font-medium">내용 <span class="text-error">*</span></span>
+                                <textarea id="commentContent" name="commentContent" rows="3" required class="textarea textarea-bordered w-full" placeholder="댓글 내용을 입력하세요."></textarea>
                             </label>
-                            <div class="flex justify-end">
-                                <button type="button" id="submitCommentBtn" class="btn btn-secondary w-full sm:w-auto">댓글 작성</button>
+
+                            <div class="comment-compose-actions">
+                                <p class="text-xs text-base-content/60">부적절한 표현은 운영 정책에 따라 삭제될 수 있습니다.</p>
+                                <button type="button" id="submitCommentBtn" class="btn btn-secondary w-full sm:w-auto">댓글 등록</button>
                             </div>
                         </form>
                     </section>
                 </div>
 
                 <footer class="app-modal-footer">
-                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <button type="button" id="deletePostBtn" class="btn btn-error btn-outline w-full sm:w-auto">삭제</button>
-                        <div class="flex flex-col-reverse gap-2 sm:flex-row">
-                            <button type="button" class="close-view btn btn-ghost w-full sm:w-auto">닫기</button>
-                            <button type="button" id="editPostBtn" class="btn btn-primary w-full sm:w-auto">수정</button>
-                        </div>
+                    <div class="flex justify-end">
+                        <button type="button" class="close-view btn btn-ghost w-full sm:w-auto">닫기</button>
                     </div>
                 </footer>
             </div>
@@ -212,23 +234,25 @@
         <div class="app-modal-shell">
             <div class="app-modal-panel sm:max-w-2xl" data-modal-panel role="dialog" aria-modal="true" aria-labelledby="editPostModalTitle" aria-describedby="editPostModalDesc">
                 <div class="app-modal-handle"><span></span></div>
+
                 <header class="app-modal-header">
-                    <div>
+                    <div class="space-y-1">
+                        <p class="modal-kicker">Edit Post</p>
                         <h2 id="editPostModalTitle" class="text-lg font-bold sm:text-xl">게시글 수정</h2>
-                        <p id="editPostModalDesc" class="mt-1 text-sm text-base-content/70">제목과 내용을 수정한 뒤 저장하세요.</p>
+                        <p id="editPostModalDesc" class="text-sm text-base-content/70">수정 내용을 확인한 뒤 저장하세요.</p>
                     </div>
-                    <button type="button" class="close-edit btn btn-sm btn-circle btn-ghost" aria-label="Close">x</button>
+                    <button type="button" class="close-edit app-modal-close btn btn-sm btn-circle btn-ghost" aria-label="Close">×</button>
                 </header>
 
                 <div class="app-modal-body">
                     <form id="editPostForm" class="space-y-3">
                         <label class="form-control w-full">
-                            <span class="label-text pb-1 text-sm">제목</span>
+                            <span class="label-text pb-1 text-sm font-medium">제목 <span class="text-error">*</span></span>
                             <input type="text" id="editPostTitle" name="title" required class="input input-bordered w-full">
                         </label>
 
                         <label class="form-control w-full">
-                            <span class="label-text pb-1 text-sm">내용</span>
+                            <span class="label-text pb-1 text-sm font-medium">내용 <span class="text-error">*</span></span>
                             <textarea id="editPostContent" name="content" rows="8" required class="textarea textarea-bordered w-full"></textarea>
                         </label>
                     </form>
@@ -245,6 +269,7 @@
     </div>
 
     <script src="/javascripts/theme.js"></script>
+    <script src="/javascripts/feedback.js"></script>
     <script src="/javascripts/modalManager.js"></script>
     <script src="/javascripts/community.js"></script>
 </body>

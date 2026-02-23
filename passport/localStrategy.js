@@ -21,7 +21,7 @@ module.exports = () => {
 
           return cb(null, user);
         } catch (err) {
-          cb(err);
+          return cb(err);
         }
       }
     )

@@ -35,6 +35,21 @@ const formatDateTime = (dateTime) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
+const notify = (message, type = "info") => {
+  if (window.GymFeedback?.notify) {
+    window.GymFeedback.notify(message, { type });
+    return;
+  }
+
+  alert(message);
+};
+
+const flash = (message, type = "info") => {
+  if (window.GymFeedback?.flash) {
+    window.GymFeedback.flash(message, type);
+  }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const writePostBtn = $("#writePostBtn");
   const postModal = $("#postModal");
@@ -47,12 +62,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const editPostBtn = $("#editPostBtn");
   const deletePostBtn = $("#deletePostBtn");
   const saveEditPostBtn = $("#saveEditPostBtn");
+  const postForm = $("#postForm");
+  const postTitleInput = $("#postTitle");
+  const postContentInput = $("#postContent");
+  const editPostTitleInput = $("#editPostTitle");
+  const editPostContentInput = $("#editPostContent");
 
   if (window.ModalManager) {
     window.ModalManager.register(postModal, {
       panelSelector: "[data-modal-panel]",
       closeSelectors: [".close"],
-      initialFocusSelector: "#postTitle"
+      initialFocusSelector: "#postTitle",
+      onClose: () => {
+        postForm?.reset();
+      }
     });
 
     window.ModalManager.register(viewPostModal, {
@@ -71,15 +94,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentPostId = null;
 
   writePostBtn?.addEventListener("click", () => {
+    postForm?.reset();
     openAppModal(postModal, writePostBtn);
   });
 
   submitPostBtn?.addEventListener("click", async () => {
-    const postTitle = $("#postTitle").value.trim();
-    const postContent = $("#postContent").value.trim();
+    const postTitle = postTitleInput?.value.trim() || "";
+    const postContent = postContentInput?.value.trim() || "";
 
     if (!postTitle || !postContent) {
-      alert("제목과 내용을 입력해주세요.");
+      notify("제목과 내용을 입력해주세요.", "warning");
       return;
     }
 
@@ -92,14 +116,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (data.success) {
-        alert("게시글이 성공적으로 등록되었습니다.");
+        flash("게시글이 등록되었습니다.", "success");
         location.reload();
       } else {
-        alert("게시글 등록이 실패했습니다. 다시 시도해주세요.");
+        notify("게시글 등록이 실패했습니다. 다시 시도해주세요.", "error");
       }
     } catch (error) {
+      notify("게시글 등록 중 오류가 발생했습니다.", "error");
     }
   });
+
+  const renderComments = (comments = []) => {
+    if (!commentList) return;
+    commentList.innerHTML = "";
+
+    if (!Array.isArray(comments) || comments.length === 0) {
+      const emptyState = document.createElement("div");
+      emptyState.className = "rounded-box border border-dashed border-base-300 bg-base-200/45 p-4 text-sm text-base-content/70";
+      emptyState.textContent = "아직 댓글이 없습니다. 첫 댓글을 남겨보세요.";
+      commentList.appendChild(emptyState);
+      return;
+    }
+
+    comments.forEach((comment) => {
+      const commentItem = document.createElement("article");
+      commentItem.className = "comment-item";
+
+      const commentHead = document.createElement("div");
+      commentHead.className = "comment-head";
+
+      const commentMeta = document.createElement("div");
+      commentMeta.className = "space-y-0.5";
+      const commentAuthor = document.createElement("strong");
+      commentAuthor.className = "comment-author";
+      commentAuthor.textContent = comment.writer;
+      const commentDate = document.createElement("p");
+      commentDate.className = "comment-date";
+      commentDate.textContent = formatDateTime(comment.regdate);
+
+      commentMeta.append(commentAuthor, commentDate);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "comment-delete-btn";
+      deleteButton.type = "button";
+      deleteButton.dataset.id = String(comment.reply_id);
+      deleteButton.textContent = "댓글 삭제";
+      deleteButton.setAttribute("aria-label", "댓글 삭제");
+
+      const commentBody = document.createElement("p");
+      commentBody.className = "comment-body";
+      commentBody.textContent = comment.content;
+
+      commentHead.append(commentMeta, deleteButton);
+      commentItem.append(commentHead, commentBody);
+      commentList.appendChild(commentItem);
+
+      deleteButton.addEventListener("click", () => {
+        deleteComment(comment.reply_id);
+      });
+    });
+  };
+
+  const refreshComments = async (postId) => {
+    if (!postId) return false;
+
+    try {
+      const response = await fetch(`/community/getPostAndComments/${postId}`);
+      const data = await response.json();
+      if (!data.success) return false;
+
+      renderComments(data.comments);
+      return true;
+    } catch (error) {
+      notify("댓글 목록을 불러오지 못했습니다.", "error");
+      return false;
+    }
+  };
 
   const deleteComment = async (replyId) => {
     if (!confirm("정말로 댓글을 삭제하시겠습니까?")) return;
@@ -110,36 +202,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await response.json();
       if (data.success) {
-        alert("댓글이 성공적으로 삭제되었습니다.");
-        location.reload();
+        notify("댓글이 삭제되었습니다.", "success");
+        await refreshComments(currentPostId);
       } else {
-        alert("댓글 삭제가 실패했습니다. 다시 시도해주세요.");
+        notify("댓글 삭제가 실패했습니다. 다시 시도해주세요.", "error");
       }
     } catch (error) {
+      notify("댓글 삭제 중 오류가 발생했습니다.", "error");
     }
-  };
-
-  const renderComments = (comments = []) => {
-    if (!commentList) return;
-    commentList.innerHTML = "";
-
-    comments.forEach((comment) => {
-      const commentItem = document.createElement("div");
-      commentItem.className = "comment-item grid grid-cols-[1fr_auto] gap-3 rounded-box border border-base-300 bg-base-100 p-3";
-      commentItem.innerHTML = `
-        <div class="comment-content text-sm">
-          <strong class="block">${comment.writer}</strong>
-          <div class="my-1 whitespace-pre-wrap break-words">${comment.content}</div>
-          <div class="comment-date text-xs text-base-content/60">${formatDateTime(comment.regdate)}</div>
-        </div>
-        <button class="comment-delete-btn btn btn-xs btn-error btn-outline h-fit" data-id="${comment.reply_id}">삭제</button>
-      `;
-      commentList.appendChild(commentItem);
-
-      commentItem.querySelector(".comment-delete-btn")?.addEventListener("click", () => {
-        deleteComment(comment.reply_id);
-      });
-    });
   };
 
   const openPost = async (item) => {
@@ -155,17 +225,13 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#viewPostContent").innerText = postContent;
     $("#viewPostDate").innerText = postDate;
     $("#viewPostWriter").innerText = postWriter;
+    if (commentContent) {
+      commentContent.value = "";
+    }
 
     if (commentList) commentList.innerHTML = "";
 
-    try {
-      const response = await fetch(`/community/getPostAndComments/${postId}`);
-      const data = await response.json();
-      if (data.success) {
-        renderComments(data.comments);
-      }
-    } catch (error) {
-    }
+    await refreshComments(postId);
 
     openAppModal(viewPostModal, item);
   };
@@ -178,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = commentContent.value.trim();
 
     if (!content) {
-      alert("댓글 내용을 입력해주세요.");
+      notify("댓글 내용을 입력해주세요.", "warning");
       return;
     }
 
@@ -191,12 +257,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (data.success) {
-        alert("댓글이 성공적으로 등록되었습니다.");
-        location.reload();
+        notify("댓글이 등록되었습니다.", "success");
+        commentContent.value = "";
+        await refreshComments(currentPostId);
       } else {
-        alert("댓글 등록이 실패했습니다. 다시 시도해주세요.");
+        notify("댓글 등록이 실패했습니다. 다시 시도해주세요.", "error");
       }
     } catch (error) {
+      notify("댓글 등록 중 오류가 발생했습니다.", "error");
     }
   });
 
@@ -204,8 +272,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentTitle = $("#viewPostTitle").innerText;
     const currentContent = $("#viewPostContent").innerText;
 
-    $("#editPostTitle").value = currentTitle;
-    $("#editPostContent").value = currentContent;
+    if (editPostTitleInput) {
+      editPostTitleInput.value = currentTitle;
+    }
+    if (editPostContentInput) {
+      editPostContentInput.value = currentContent;
+    }
 
     closeAppModal(viewPostModal, { restoreFocus: false });
 
@@ -223,21 +295,22 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await response.json();
       if (data.success) {
-        alert("게시글이 성공적으로 삭제되었습니다.");
+        flash("게시글이 삭제되었습니다.", "success");
         location.reload();
       } else {
-        alert("게시글 삭제가 실패했습니다. 다시 시도해주세요.");
+        notify("게시글 삭제가 실패했습니다. 다시 시도해주세요.", "error");
       }
     } catch (error) {
+      notify("게시글 삭제 중 오류가 발생했습니다.", "error");
     }
   });
 
   saveEditPostBtn?.addEventListener("click", async () => {
-    const updatedTitle = $("#editPostTitle").value.trim();
-    const updatedContent = $("#editPostContent").value.trim();
+    const updatedTitle = editPostTitleInput?.value.trim() || "";
+    const updatedContent = editPostContentInput?.value.trim() || "";
 
     if (!updatedTitle || !updatedContent) {
-      alert("제목과 내용을 입력해주세요.");
+      notify("제목과 내용을 입력해주세요.", "warning");
       return;
     }
 
@@ -249,12 +322,37 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await response.json();
       if (data.success) {
-        alert("게시글이 성공적으로 수정되었습니다.");
-        location.reload();
+        notify("게시글이 수정되었습니다.", "success");
+
+        const postItem = document.querySelector(`.post-item[data-id="${currentPostId}"]`);
+        if (postItem) {
+          postItem.setAttribute("data-title", updatedTitle);
+          postItem.setAttribute("data-content", updatedContent);
+
+          const titleCell = postItem.querySelector("td:nth-child(2) .line-clamp-1");
+          if (titleCell) {
+            titleCell.textContent = updatedTitle;
+          } else {
+            const fallbackTitleCell = postItem.querySelector("td:nth-child(2)");
+            if (fallbackTitleCell) {
+              fallbackTitleCell.textContent = updatedTitle;
+            }
+          }
+        }
+
+        const viewPostTitle = $("#viewPostTitle");
+        const viewPostContent = $("#viewPostContent");
+        if (viewPostTitle) {
+          viewPostTitle.innerText = updatedTitle;
+        }
+        if (viewPostContent) {
+          viewPostContent.innerText = updatedContent;
+        }
       } else {
-        alert("게시글 수정이 실패했습니다. 다시 시도해주세요.");
+        notify("게시글 수정이 실패했습니다. 다시 시도해주세요.", "error");
       }
     } catch (error) {
+      notify("게시글 수정 중 오류가 발생했습니다.", "error");
     }
   });
 });
